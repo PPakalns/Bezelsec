@@ -96,9 +96,9 @@ class TextComponent {
     constructor(cont, x, y, text) {
         const style = new PIXI.TextStyle({
             fontFamily: 'Verdana',
-            fontSize: 36,
+            fontSize: 54,
             fontWeight: 'bold',
-            fill: '#ffffff', // gradient
+            fill: '#000000', // gradient
             wordWrap: true,
             wordWrapWidth: 440,
         });
@@ -180,7 +180,7 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
 }
 
-let NODE_CNT = 100
+let NODE_CNT = 100;
 
 for (let i = 0; i < NODE_CNT; i++)
 {
@@ -194,6 +194,33 @@ for (let i = 0; i < NODE_CNT; i++)
     graph.edges.push([getRandomInt(0, NODE_CNT), getRandomInt(0, NODE_CNT)]);
 }
 
+function delatGovno(screens, padding, pos, size, windowSize) {
+    let sortedNodes = [];
+    for (var k in graph.nodes) {
+        sortedNodes.push(k);
+    }
+
+    sortedNodes.sort((a, b) => {
+        return graph.nodes[a].x - graph.nodes[b].x;
+    });
+
+    let offset = 0;
+
+    for (let i = 0; i < sortedNodes.length; i++) {
+        let k = sortedNodes[i];
+        let node = graph.nodes[k];
+        node[pos] += offset;
+        let endX = node[pos] + node[size] / 2;
+        let screenStart = Math.floor((node[pos] - node[size] / 2 - padding) * screens / windowSize);
+        let screenEnd = Math.floor((endX + padding) * screens / windowSize);
+        if (screenStart != screenEnd) {
+            let dif = screenEnd * windowSize / screens - (node[pos] - node[size] / 2 - padding);
+            node[pos] += dif;
+            offset += dif;
+        }
+    }
+}
+
 function preprocess(graph){
     for (let node_key in graph['nodes'])
     {
@@ -204,7 +231,11 @@ function preprocess(graph){
         node.height = c.getBounds().height;
     }
     let g = new dagre.graphlib.Graph();
-    g.setGraph({});
+    g.setGraph({
+        nodesep: 100,
+        edgesep: 30,
+        ranksep: 80
+    });
     g.setDefaultEdgeLabel(function() {
         return {};
     });
@@ -218,6 +249,10 @@ function preprocess(graph){
     }
 
     dagre.layout(g);
+
+    delatGovno(8, 75, "x", "width", window.innerWidth);
+    delatGovno(2, 75, "y", "height", window.innerHeight);
+
     return graph;
 }
 
