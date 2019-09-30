@@ -5,7 +5,8 @@ export default {
             shape: 'circle'
         },
         'a' : {
-            label: 'Enter bank details'
+            label: 'Enter bank details',
+            color: 0xFF0000,
         },
         'b' : {
             label: 'Receive info about toll gate payment'

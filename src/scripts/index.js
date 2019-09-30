@@ -178,7 +178,7 @@ class TextComponent {
 }
 
 class NodeComponent {
-    constructor (cont, x, y, text, shape='rectangle') {
+    constructor (cont, x, y, text, shape='rectangle', color=0xdddd00) {
         this.c = new PIXI.Container();
         this.c.x = x;
         this.c.y = y;
@@ -188,10 +188,10 @@ class NodeComponent {
 
         if (shape == 'rectangle')
         {
-            this.shape = new RectangleComponent(this.c, 0, 0, bounds.width + 10, bounds.height + 10, 0xdddd00, 0);
+            this.shape = new RectangleComponent(this.c, 0, 0, bounds.width + 10, bounds.height + 10, color, 0);
         }
         else
-            this.shape = new EllipseComponent(this.c, bounds.width / 2, bounds.height / 2, bounds.width / 1.5, bounds.height / 1.5, 0xdddd00);
+            this.shape = new EllipseComponent(this.c, bounds.width / 2, bounds.height / 2, bounds.width / 1.5, bounds.height / 1.5, color);
 
         this.c.addChild(tmpc);
         cont.addChild(this.c);
@@ -320,8 +320,9 @@ function draw_graph(cont, graph)
     }
 
     for (let k in graph.nodes) {
-        let xy = GetXYKey(graph, k);
-        let node = new NodeComponent(cont, xy.x - xy.width / 2, xy.y - xy.height / 2, xy.label, xy.shape || 'rectangle');
+        let node_dict = GetXYKey(graph, k);
+        let node = new NodeComponent(cont, node_dict.x - node_dict.width / 2, node_dict.y - node_dict.height / 2, 
+                                     node_dict.label, node_dict.shape || 'rectangle', node_dict.color || 0xdddd00);
         node.draw();
     }
 }
