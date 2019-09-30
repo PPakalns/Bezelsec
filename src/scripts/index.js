@@ -16,15 +16,46 @@ let app = new PIXI.Application({width: window.innerWidth, height: window.innerHe
 //Add the canvas that Pixi automatically created for you to the HTML document
 document.body.appendChild(app.view);
 
-const graphics = new PIXI.Graphics();
+class RectangleComponent {
+    constructor(x, y, w, h, color=0xDE3249) {
+        this.graphics = new PIXI.Graphics();
+        this.x = x;
+        this.y = y;
+        this.width = w;
+        this.height = h;
+        this.color = color;
+        app.stage.addChild(this.graphics);
+    }
 
-// Rectangle
-graphics.beginFill(0xDE3249);
-graphics.drawRect(50, 50, 100, 100);
-graphics.endFill();
+    draw() {
+        this.graphics.beginFill(this.color);
+        this.graphics.drawRect(this.x, this.y, this.width, this.height);
+        this.graphics.endFill();
+    }
+}
 
-graphics.lineStyle(69, 0x1337FF, 1, 0.5);
-graphics.moveTo(69, 420);
-graphics.lineTo(420, 420);
+class LineComponent {
+    constructor(x1, y1, x2, y2, color = 0x1337FF, width = 420/69, transparency = 1, offset = 0.5) {
+        this.graphics = new PIXI.Graphics();
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+        this.color = color;
+        this.width = width;
+        this.transparency = transparency;
+        this.offset = offset;
+        app.stage.addChild(this.graphics);
+    }
 
-app.stage.addChild(graphics);
+    draw() {
+        this.graphics.lineStyle(this.width, this.color, this.transparency, this.offset);
+        this.graphics.moveTo(this.x1, this.y1);
+        this.graphics.lineTo(this.x2, this.y2);
+    }
+}
+
+let rect = new RectangleComponent(10, 20, 300, 300);
+rect.draw();
+let meme = new LineComponent(13, 69, 420, 1337);
+meme.draw();
