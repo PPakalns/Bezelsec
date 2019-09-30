@@ -184,6 +184,7 @@ function getRandomInt(min, max) {
 }
 
 let NODE_CNT = 100;
+let EDGE_CNT = 50;
 
 for (let i = 0; i < NODE_CNT; i++)
 {
@@ -192,9 +193,9 @@ for (let i = 0; i < NODE_CNT; i++)
     };
 }
 
-for (let i = 0; i < NODE_CNT; i++)
+for (let i = 0; i < EDGE_CNT; i++)
 {
-    graph.edges.push([getRandomInt(0, NODE_CNT), getRandomInt(0, NODE_CNT)]);
+    graph.edges.push([getRandomInt(0, i), i]);
 }
 
 function delatGovno(graph, screens, padding, pos, size, windowSize) {
@@ -326,7 +327,7 @@ function do_graph_processing(cont, graph)
             let onode = graph.nodes[okey];
             let onodepos = getScreenCoords(onode.screen);
             score -= 3;
-            score += Math.abs(onodepos.x - pos.x) + Math.abs(onodepos.y - pos.y);
+            score += Math.abs(onodepos.x - pos.x) + Math.abs(onodepos.y - pos.y) * 3;
         }
         return score;
     }
@@ -403,6 +404,28 @@ function do_graph_processing(cont, graph)
         draw_graph(localcont, subgraph);
         console.log(subgraph);
         cont.addChild(localcont);
+    }
+
+    function getNodePos(key)
+    {
+        let enode = graph.nodes[key];
+        let espos = getScreenCoords(enode.screen);
+        return {
+            x: enode.x + espos.x * Math.floor(window.innerWidth / WX),
+            y: enode.y + espos.y * Math.floor(window.innerHeight / WY)
+        };
+    }
+
+    for (let edge of graph.edges)
+    {
+        if (graph.nodes[edge[0]].screen == graph.nodes[edge[1]].screen)
+        {
+            continue;
+        }
+        let e0 = getNodePos(edge[0]);
+        let e1 = getNodePos(edge[1]);
+        let line = new LineComponent(cont, e0.x, e0.y, e1.x, e1.y);
+        line.draw();
     }
 }
 
