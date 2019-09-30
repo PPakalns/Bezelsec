@@ -1,9 +1,11 @@
 import '../styles/index.scss';
 import * as PIXI from 'pixi.js-legacy';
 var dagre = require('dagre');
+import ex1 from '../model1.js';
+import ex2 from '../model2.js';
 
 const WX = 8;
-const WY = 2;
+const WY = 4;
 
 let type = "WebGL";
 if(!PIXI.utils.isWebGLSupported()){
@@ -144,59 +146,7 @@ class NodeComponent {
     }
 }
 
-let graph = {
-    nodes: {
-        'a' : {
-            label: 'Lorem Ipsum'
-
-        },
-        'b' : {
-            label: 'Color sit ammet'
-        },
-        'c' : {
-            label: 'Lorem Ipsum'
-
-        },
-        'd' : {
-            label: 'Color sit ammet'
-        },
-        'e' : {
-            label: 'Lorem Ipsum'
-
-        },
-        'f' : {
-            label: 'Color sit ammet'
-        }
-    },
-    edges : [
-        ['a', 'b'],
-        ['a', 'c'],
-        ['a', 'd'],
-        ['a', 'e'],
-        ['a', 'f'],
-    ]
-};
-
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
-}
-
-let NODE_CNT = 100;
-let EDGE_CNT = 50;
-
-for (let i = 0; i < NODE_CNT; i++)
-{
-    graph.nodes[i + ''] = {
-        label: i + ''
-    };
-}
-
-for (let i = 0; i < EDGE_CNT; i++)
-{
-    graph.edges.push([getRandomInt(0, i), i]);
-}
+let graph = ex1;
 
 function delatGovno(graph, screens, padding, pos, size, windowSize) {
     let sortedNodes = [];
@@ -338,14 +288,15 @@ function do_graph_processing(cont, graph)
     }
 
     let iter = 0;
+    const TOTAL = 50000;
     while (true)
     {
-        if (iter > 1000)
+        if (iter > TOTAL)
             break;
         for (let key in graph.nodes)
         {
             iter += 1;
-            if (iter > 1000)
+            if (iter > TOTAL)
                 break;
             let idx = graph.nodes[key].screen;
             let mainpos = getScreenCoords(idx);
@@ -428,12 +379,22 @@ function do_graph_processing(cont, graph)
         let line = new LineComponent(cont, e0.x, e0.y, e1.x, e1.y);
         line.draw();
     }
-    cont.addChild(subgraph_cont)
+    cont.addChild(subgraph_cont);
 }
-
 
 let cont = new PIXI.Container();
 app.stage.addChild(cont);
 do_graph_processing(cont, graph);
+
+global.do_graph_processing = function(graph) {
+    app.stage.removeChild(cont);
+    app.stage.addChild(cont = new PIXI.Container());
+    do_graph_processing(cont, graph);
+};
+
+global.graphs = {
+    ex1: ex1,
+    ex2: ex2
+};
 
 console.log(graph);

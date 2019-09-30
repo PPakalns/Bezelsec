@@ -1,4 +1,4 @@
-get graph = {
+export default {
     nodes: {
         'start1' : {
             label: 'Start'
@@ -12,10 +12,10 @@ get graph = {
         },
         'details' : {
             label: 'Bank acct details'
-        }
+        },
         'end1' : {
             label: 'End'
-        }
+        },
         'start2' : {
             label: 'Start'
         },
@@ -25,43 +25,43 @@ get graph = {
         },
         'd' : {
             label: 'Bank acct data storage'
-        }
+        },
         'e' : {
             label: 'Pass toll gate'
-        }
+        },
         'end2' : {
             label: 'End'
-        }
+        },
         'start3' : {
             label: 'Start'
-        }
+        },
         'f' : {
             label: 'Request bank details'
-        }
+        },
         'g' : {
             label: 'Receive bank acct details'
-        }
+        },
         'h' : {
             label: 'Request Payment'
-        }
+        },
         'end3' : {
             label: 'Pass toll gate'
-        }
+        },
         'start4' : {
             label: 'Start'
-        }
+        },
         'i' : {
             label: 'Perform payment transaction'
-        }
+        },
         'j' : {
             label: 'Inform about transaction'
-        }
+        },
         'end4' : {
             label: 'End'
-        }
+        },
     },
-    edges : 
-        ['start1', 'a'],š
+    edges : [
+        ['start1', 'a'],
         ['a', 'b'],
         ['details', 'a'],
         ['b', 'end1'],
