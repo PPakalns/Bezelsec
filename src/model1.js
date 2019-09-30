@@ -50,7 +50,7 @@ export default {
             label: 'Request Payment'
         },
         'end3' : {
-            label: 'Pass toll gate',
+            label: 'End',
             shape: 'circle'
         },
         'start4' : {
