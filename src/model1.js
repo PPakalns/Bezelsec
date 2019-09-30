@@ -45,7 +45,7 @@ export default {
             label: 'Request Payment'
         },
         'end3' : {
-            label: 'Pass toll gate'
+            label: 'End'
         },
         'start4' : {
             label: 'Start'
@@ -111,6 +111,30 @@ export default {
         }, {
             from : 'j',
             to : 'end4',
+        }, {
+            from : 'a',
+            to : 'c',
+            label : "Bank acct details",
+        },{
+            from : 'a',
+            to : 'c',
+            label : "Bank acct details",
+        },{
+            from : 'e',
+            to : 'g',
+            label : "Bank acct details",
+        },{
+            from : 'f',
+            to : 'e',
+            label : "Request for bank details",
+        },{
+            from : 'h',
+            to : 'i',
+            label : "Bank acct details",
+        },{
+            from : 'j',
+            to : 'b',
+            label : "Bank acct details",
         }
     ]
 };
