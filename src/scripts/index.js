@@ -41,34 +41,9 @@ class RectangleComponent {
     }
 }
 
-const FRAGMENT_SHADER_LineComponent_Lighting = `
-precision highp float;
-
-varying vec2 vTextureCoord;
-
-uniform vec4 inputSize;
-uniform vec4 outputFrame;
-uniform float time;
-
-void main() {
-  vec2 screenPos = vTextureCoord * inputSize.xy + outputFrame.xy;
-
-  if (length(mouse - screenPos) < 25.0) {
-      gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0) * 0.7; //yellow circle, alpha=0.7
-  } else {
-      gl_FragColor = vec4( sin(time), (mouse.xy - outputFrame.xy) / outputFrame.zw, 1.0) * 0.5; // blend with underlying image, alpha=0.5
-  }
-}
-`;
-
 class LineComponent {
-    constructor(cont, x1, y1, x2, y2, color = 0xFFFF00, width = 420/69, transparency = 1, offset = 0.5) {
+    constructor(cont, x1, y1, x2, y2, color = 0x1337FF, width = 420/69, transparency = 1, offset = 0.5) {
         this.graphics = new PIXI.Graphics();
-        this.graphics2 = new PIXI.Graphics();
-        this.blur = new PIXI.filters.BlurFilter();
-        this.blur.blur = width * 2;
-        this.blur.quality = 10;
-        this.graphics.filters = [this.blur];
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;
@@ -77,19 +52,13 @@ class LineComponent {
         this.width = width;
         this.transparency = transparency;
         this.offset = offset;
-        cont.addChild(this.graphics2);
         cont.addChild(this.graphics);
     }
 
     draw() {
-        //this.graphics.filters.push(this.blur);
-        this.graphics.lineStyle(this.width * 2, this.color, this.transparency, this.offset);
-        this.graphics2.lineStyle(this.width, this.color, this.transparency, this.offset);
-        this.graphics2.moveTo(this.x1, this.y1);
-        this.graphics2.lineTo(this.x2, this.y2);
+        this.graphics.lineStyle(this.width, this.color, this.transparency, this.offset);
         this.graphics.moveTo(this.x1, this.y1);
         this.graphics.lineTo(this.x2, this.y2);
-        //this.graphics.filters.pop();
     }
 }
 
@@ -126,8 +95,8 @@ class NodeComponent {
         let bounds = this.text.getBounds();
         bounds.x = 0;
         bounds.y = 0;
-        bounds.width += 5;
-        bounds.height += 5;
+        bounds.width += 10;
+        bounds.height += 10;
         this.rect.setBounds(bounds);
 
         cont.addChild(this.c);
@@ -138,7 +107,7 @@ class NodeComponent {
     }
 }
 
-let meme = new LineComponent(app.stage, 13, 69, 420, 69);
+let meme = new LineComponent(app.stage, 13, 69, 420, 1337);
 meme.draw();
 let node = new NodeComponent(app.stage, 20, 30, "Lorem Ipsum");
 node.draw();
