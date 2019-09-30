@@ -373,6 +373,7 @@ function do_graph_processing(cont, graph)
         }
     }
 
+    let subgraph_cont = new PIXI.Container();
     for (let i = 0; i < WX * WY; i++)
     {
         let localcont = new PIXI.Container();
@@ -403,7 +404,7 @@ function do_graph_processing(cont, graph)
         }
         draw_graph(localcont, subgraph);
         console.log(subgraph);
-        cont.addChild(localcont);
+        subgraph_cont.addChild(localcont);
     }
 
     function getNodePos(key)
@@ -427,6 +428,7 @@ function do_graph_processing(cont, graph)
         let line = new LineComponent(cont, e0.x, e0.y, e1.x, e1.y);
         line.draw();
     }
+    cont.addChild(subgraph_cont)
 }
 
 
