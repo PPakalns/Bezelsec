@@ -1,8 +1,6 @@
 import '../styles/index.scss';
 import * as PIXI from 'pixi.js';
 
-console.log("TEST");
-
 let type = "WebGL";
 if(!PIXI.utils.isWebGLSupported()){
     type = "canvas";
@@ -136,10 +134,42 @@ class NodeComponent {
     draw() {
         this.rect.draw();
     }
+
+    getBounds() {
+        return this.c.getBounds();
+    }
 }
+
+let graph = {
+    nodes: {
+        'a' : {
+            label: 'Lorem Ipsum'
+
+        },
+        'b' : {
+            label: 'Color sit ammet'
+        }
+    },
+    edges : [
+        ['a', 'b'],
+    ]
+};
+
+function preprocess(graph){
+    for (let node_key in graph['nodes'])
+    {
+        let node = graph['nodes'][node_key];
+        let c = new PIXI.Container();
+        new NodeComponent(c, 0, 0, node.label);
+        node.width = c.getBounds().width;
+        node.height = c.getBounds().height;
+    }
+    return graph;
+}
+
+preprocess(graph);
 
 let meme = new LineComponent(app.stage, 13, 69, 420, 69);
 meme.draw();
 let node = new NodeComponent(app.stage, 20, 30, "Lorem Ipsum");
 node.draw();
-
