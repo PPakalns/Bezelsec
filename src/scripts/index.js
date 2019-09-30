@@ -96,7 +96,7 @@ class LineComponent {
 class TextComponent {
     constructor(cont, x, y, text) {
         const style = new PIXI.TextStyle({
-            fontFamily: 'Arial',
+            fontFamily: 'Verdana',
             fontSize: 36,
             fontWeight: 'bold',
             fill: '#ffffff', // gradient
@@ -126,8 +126,8 @@ class NodeComponent {
         let bounds = this.text.getBounds();
         bounds.x = 0;
         bounds.y = 0;
-        bounds.width += 5;
-        bounds.height += 5;
+        bounds.width += 10;
+        bounds.height += 10;
         this.rect.setBounds(bounds);
 
         cont.addChild(this.c);
