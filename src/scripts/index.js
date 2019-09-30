@@ -31,7 +31,7 @@ class RectangleComponent {
 
     draw() {
         this.graphics.beginFill(this.color);
-        this.graphics.drawRect(this.x, this.y, this.width, this.height);
+        this.graphics.drawRoundedRect(this.x, this.y, this.width, this.height, 20);
         this.graphics.endFill();
     }
 
