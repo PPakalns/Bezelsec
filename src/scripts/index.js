@@ -1,5 +1,6 @@
 import '../styles/index.scss';
 import * as PIXI from 'pixi.js';
+var dagre = require('dagre');
 
 let type = "WebGL";
 if(!PIXI.utils.isWebGLSupported()){
@@ -173,3 +174,19 @@ let meme = new LineComponent(app.stage, 13, 69, 420, 69);
 meme.draw();
 let node = new NodeComponent(app.stage, 20, 30, "Lorem Ipsum");
 node.draw();
+
+let g = new dagre.graphlib.Graph();
+g.setGraph({});
+g.setDefaultEdgeLabel(function() {
+    return {};
+});
+
+for (let k in graph.nodes) {
+    g.setNode(k, graph.nodes[k]);
+}
+
+for (let i = 0; i < graph.edges.length; i++) {
+    g.setEdge(graph.edges[i][0], graph.edges[i][1]);
+}
+
+dagre.layout(g);
