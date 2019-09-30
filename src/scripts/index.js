@@ -4,8 +4,9 @@ var dagre = require('dagre');
 import ex1 from '../model1.js';
 import ex2 from '../model2.js';
 
-const WX = 8;
-const WY = 4;
+global.WX = 1;
+global.WY = 1;
+global.order = 'LR'
 
 let type = "WebGL";
 if(!PIXI.utils.isWebGLSupported()){
@@ -14,8 +15,11 @@ if(!PIXI.utils.isWebGLSupported()){
 
 PIXI.utils.sayHello(type);
 
+const WIDTH = window.innerWidth
+const HEIGHT = window.innerHeight
+
 //Create a Pixi Application
-let app = new PIXI.Application({width: window.innerWidth, height: window.innerHeight});
+let app = new PIXI.Application({width: WIDTH, height: HEIGHT});
 
 //Add the canvas that Pixi automatically created for you to the HTML document
 document.body.appendChild(app.view);
@@ -148,7 +152,7 @@ class NodeComponent {
 
 let graph = ex1;
 
-function delatGovno(graph, screens, padding, pos, size, windowSize) {
+function delatGovno(graph, screens, padding, pos, size, appSize) {
     let sortedNodes = [];
     for (var k in graph.nodes) {
         sortedNodes.push(k);
@@ -165,10 +169,10 @@ function delatGovno(graph, screens, padding, pos, size, windowSize) {
         let node = graph.nodes[k];
         node[pos] += offset;
         let endX = node[pos] + node[size] / 2;
-        let screenStart = Math.floor((node[pos] - node[size] / 2 - padding) * screens / windowSize);
-        let screenEnd = Math.floor((endX + padding) * screens / windowSize);
+        let screenStart = Math.floor((node[pos] - node[size] / 2 - padding) * screens / appSize);
+        let screenEnd = Math.floor((endX + padding) * screens / appSize);
         if (screenStart != screenEnd) {
-            let dif = screenEnd * windowSize / screens - (node[pos] - node[size] / 2 - padding);
+            let dif = screenEnd * appSize / screens - (node[pos] - node[size] / 2 - padding);
             node[pos] += dif;
             offset += dif;
         }
@@ -190,7 +194,7 @@ function preprocess(graph){
         nodesep: 100,
         edgesep: 30,
         ranksep: 80,
-        rankdir: 'LR',
+        rankdir: global.order,
     });
     g.setDefaultEdgeLabel(function() {
         return {};
@@ -206,8 +210,8 @@ function preprocess(graph){
 
     dagre.layout(g);
 
-    delatGovno(graph, WX, 75, "x", "width", window.innerWidth);
-    delatGovno(graph, WY, 75, "y", "height", window.innerHeight);
+    delatGovno(graph, global.WX, 75, "x", "width", WIDTH);
+    delatGovno(graph, global.WY, 75, "y", "height", HEIGHT);
     return g;
 }
 
@@ -329,8 +333,8 @@ function do_graph_processing(cont, graph)
     {
         let localcont = new PIXI.Container();
         let spos = getScreenCoords(i);
-        localcont.x = spos.x * Math.floor(window.innerWidth / WX);
-        localcont.y = spos.y * Math.floor(window.innerHeight / WY);
+        localcont.x = spos.x * Math.floor(WIDTH / WX);
+        localcont.y = spos.y * Math.floor(HEIGHT / WY);
 
         let subgraph = {
             nodes: {},
@@ -363,8 +367,8 @@ function do_graph_processing(cont, graph)
         let enode = graph.nodes[key];
         let espos = getScreenCoords(enode.screen);
         return {
-            x: enode.x + espos.x * Math.floor(window.innerWidth / WX),
-            y: enode.y + espos.y * Math.floor(window.innerHeight / WY)
+            x: enode.x + espos.x * Math.floor(WIDTH / WX),
+            y: enode.y + espos.y * Math.floor(HEIGHT / WY)
         };
     }
 
