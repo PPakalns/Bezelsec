@@ -201,7 +201,7 @@ function delatGovno(screens, padding, pos, size, windowSize) {
     }
 
     sortedNodes.sort((a, b) => {
-        return graph.nodes[a].x - graph.nodes[b].x;
+        return (graph.nodes[a][pos] - graph.nodes[a][size] / 2) - (graph.nodes[b][pos] - graph.nodes[a][size] / 2);
     });
 
     let offset = 0;
@@ -218,6 +218,7 @@ function delatGovno(screens, padding, pos, size, windowSize) {
             node[pos] += dif;
             offset += dif;
         }
+        node["off" + pos] = offset;
     }
 }
 
@@ -268,8 +269,14 @@ c.y = 10;
 app.stage.addChild(c);
 
 for (let edge of dagre_g.edges()){
-    let e = dagre_g.edge(edge)
-    for (let i = 1; i < e.points.length; i=i + 1)
+    let e = dagre_g.edge(edge);
+    for (let i = 0; i < e.points.length; i++)
+    {
+        let mult = (e.points.length - 1 - i) / (e.points.length - 1);
+        e.points[i].x += graph.nodes[edge.v].offx * mult + graph.nodes[edge.w].offx * (1 - mult);
+        e.points[i].y += graph.nodes[edge.v].offy * mult + graph.nodes[edge.w].offy * (1 - mult);
+    }
+    for (let i = 1; i < e.points.length; i++)
     {
         let last = e.points[i - 1];
         let nxt = e.points[i];
