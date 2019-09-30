@@ -315,17 +315,17 @@ function do_graph_processing(cont, graph)
                 continue;
             let node = graph.nodes[okey];
             if (thisidx == node.screen)
-                score += 2;
+                score += 3;
         }
 
         for (let edge of graph.edges)
         {
-            if (edge[0] != key || edge[1] != key)
+            if (edge[0] != key && edge[1] != key)
                 continue;
             let okey = (edge[0] == key ? edge[1] : edge[0]);
             let onode = graph.nodes[okey];
             let onodepos = getScreenCoords(onode.screen);
-            score -= 2;
+            score -= 3;
             score += Math.abs(onodepos.x - pos.x) + Math.abs(onodepos.y - pos.y);
         }
         return score;
