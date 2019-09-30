@@ -17,14 +17,14 @@ let app = new PIXI.Application({width: window.innerWidth, height: window.innerHe
 document.body.appendChild(app.view);
 
 class RectangleComponent {
-    constructor(x, y, w, h, color=0xdddd00) {
+    constructor(cont, x, y, w, h, color=0xdddd00) {
         this.graphics = new PIXI.Graphics();
         this.x = x;
         this.y = y;
         this.width = w;
         this.height = h;
         this.color = color;
-        app.stage.addChild(this.graphics);
+        cont.addChild(this.graphics);
     }
 
     draw() {
@@ -62,7 +62,7 @@ void main() {
 `;
 
 class LineComponent {
-    constructor(x1, y1, x2, y2, color = 0xFFFF00, width = 420/69, transparency = 1, offset = 0.5) {
+    constructor(cont, x1, y1, x2, y2, color = 0xFFFF00, width = 420/69, transparency = 1, offset = 0.5) {
         this.graphics = new PIXI.Graphics();
         this.graphics2 = new PIXI.Graphics();
         this.blur = new PIXI.filters.BlurFilter();
@@ -77,8 +77,8 @@ class LineComponent {
         this.width = width;
         this.transparency = transparency;
         this.offset = offset;
-        app.stage.addChild(this.graphics2);
-        app.stage.addChild(this.graphics);
+        cont.addChild(this.graphics2);
+        cont.addChild(this.graphics);
     }
 
     draw() {
@@ -94,8 +94,7 @@ class LineComponent {
 }
 
 class TextComponent {
-    constructor(x, y, text) {
-        this.graphics = new PIXI.Graphics();
+    constructor(cont, x, y, text) {
         const style = new PIXI.TextStyle({
             fontFamily: 'Arial',
             fontSize: 36,
@@ -107,7 +106,7 @@ class TextComponent {
         this.richText = new PIXI.Text(text, style);
         this.richText.x = x;
         this.richText.y = y;
-        app.stage.addChild(this.richText);
+        cont.addChild(this.richText);
     }
 
     getBounds() {
@@ -116,15 +115,22 @@ class TextComponent {
 }
 
 class NodeComponent {
-    constructor (x, y, text) {
-        this.rect = new RectangleComponent(0, 0, 1, 1);
-        this.text = new TextComponent(x, y, text);
+    constructor (cont, x, y, text) {
+        this.c = new PIXI.Container();;;
+        this.c.x = x;
+        this.c.y = y;
+
+        this.rect = new RectangleComponent(this.c, 0, 0, 1, 1);
+        this.text = new TextComponent(this.c, 5, 5, text);
+
         let bounds = this.text.getBounds();
-        bounds.x -= 10;
-        bounds.y -= 7;
-        bounds.width += 20;
-        bounds.height += 15;
+        bounds.x = 0;
+        bounds.y = 0;
+        bounds.width += 5;
+        bounds.height += 5;
         this.rect.setBounds(bounds);
+
+        cont.addChild(this.c);
     }
 
     draw() {
@@ -132,8 +138,8 @@ class NodeComponent {
     }
 }
 
-let meme = new LineComponent(13, 69, 420, 69);
+let meme = new LineComponent(app.stage, 13, 69, 420, 69);
 meme.draw();
-let node = new NodeComponent(20, 30, "Lorem Ipsum");
+let node = new NodeComponent(app.stage, 20, 30, "Lorem Ipsum");
 node.draw();
 
