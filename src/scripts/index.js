@@ -6,6 +6,8 @@ import ex2 from '../model2.js';
 
 global.WX = 1;
 global.WY = 1;
+global.SWX = 8
+global.SWY = 2
 global.order = 'LR'
 
 let type = "WebGL";
@@ -210,8 +212,8 @@ function preprocess(graph){
 
     dagre.layout(g);
 
-    delatGovno(graph, global.WX, 75, "x", "width", WIDTH);
-    delatGovno(graph, global.WY, 75, "y", "height", HEIGHT);
+    delatGovno(graph, global.SWX, 75, "x", "width", WIDTH);
+    delatGovno(graph, global.SWY, 75, "y", "height", HEIGHT);
     return g;
 }
 
@@ -252,12 +254,12 @@ function do_graph_processing(cont, graph)
 {
     function getScreenCoords(screenIdx)
     {
-        return {x: screenIdx % WX, y: Math.floor(screenIdx / WX)};
+        return {x: screenIdx % global.WX, y: Math.floor(screenIdx / global.WX)};
     }
 
     function getIdx(pos)
     {
-        return pos.y * WX + pos.x;
+        return pos.y * global.WX + pos.x;
     }
 
     function calcScore(key, pos)
@@ -312,7 +314,7 @@ function do_graph_processing(cont, graph)
                 for (let dy of [-1, 0, 1])
                 {
                     let newpos = {x: mainpos.x + dx, y: mainpos.y + dy};
-                    if (newpos.x < 0 || newpos.x >= WX || newpos.y < 0 || newpos.y >= WY)
+                    if (newpos.x < 0 || newpos.x >= global.WX || newpos.y < 0 || newpos.y >= global.WY)
                     {
                         continue;
                     }
@@ -329,12 +331,12 @@ function do_graph_processing(cont, graph)
     }
 
     let subgraph_cont = new PIXI.Container();
-    for (let i = 0; i < WX * WY; i++)
+    for (let i = 0; i < global.WX * global.WY; i++)
     {
         let localcont = new PIXI.Container();
         let spos = getScreenCoords(i);
-        localcont.x = spos.x * Math.floor(WIDTH / WX);
-        localcont.y = spos.y * Math.floor(HEIGHT / WY);
+        localcont.x = spos.x * Math.floor(WIDTH / global.WX);
+        localcont.y = spos.y * Math.floor(HEIGHT / global.WY);
 
         let subgraph = {
             nodes: {},
@@ -367,8 +369,8 @@ function do_graph_processing(cont, graph)
         let enode = graph.nodes[key];
         let espos = getScreenCoords(enode.screen);
         return {
-            x: enode.x + espos.x * Math.floor(WIDTH / WX),
-            y: enode.y + espos.y * Math.floor(HEIGHT / WY)
+            x: enode.x + espos.x * Math.floor(WIDTH / global.WX),
+            y: enode.y + espos.y * Math.floor(HEIGHT / global.WY)
         };
     }
 
