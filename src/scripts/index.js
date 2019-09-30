@@ -78,7 +78,7 @@ class LineComponent {
         this.offset = offset;
         cont.addChild(this.graphics2);
         cont.addChild(this.graphics);
-    }
+    };
 
     draw() {
         //this.graphics.filters.push(this.blur);
@@ -194,7 +194,7 @@ for (let i = 0; i < NODE_CNT; i++)
     graph.edges.push([getRandomInt(0, NODE_CNT), getRandomInt(0, NODE_CNT)]);
 }
 
-function delatGovno(screens, padding, pos, size, windowSize) {
+function delatGovno(graph, screens, padding, pos, size, windowSize) {
     let sortedNodes = [];
     for (var k in graph.nodes) {
         sortedNodes.push(k);
@@ -235,7 +235,8 @@ function preprocess(graph){
     g.setGraph({
         nodesep: 100,
         edgesep: 30,
-        ranksep: 80
+        ranksep: 80,
+        rankdir: 'LR',
     });
     g.setDefaultEdgeLabel(function() {
         return {};
@@ -251,43 +252,163 @@ function preprocess(graph){
 
     dagre.layout(g);
 
-    delatGovno(8, 75, "x", "width", window.innerWidth);
-    delatGovno(2, 75, "y", "height", window.innerHeight);
+    delatGovno(graph, 8, 75, "x", "width", window.innerWidth);
+    delatGovno(graph, 2, 75, "y", "height", window.innerHeight);
     return g;
 }
 
-let dagre_g = preprocess(graph);
-
-function GetXYKey(graph, name)
+function draw_graph(cont, graph)
 {
-    return graph.nodes[name];
-}
+    let dagre_g = preprocess(graph);
 
-let c = new PIXI.Container();
-c.x = 10;
-c.y = 10;
-app.stage.addChild(c);
-
-for (let edge of dagre_g.edges()){
-    let e = dagre_g.edge(edge);
-    for (let i = 0; i < e.points.length; i++)
+    function GetXYKey(graph, name)
     {
-        let mult = (e.points.length - 1 - i) / (e.points.length - 1);
-        e.points[i].x += graph.nodes[edge.v].offx * mult + graph.nodes[edge.w].offx * (1 - mult);
-        e.points[i].y += graph.nodes[edge.v].offy * mult + graph.nodes[edge.w].offy * (1 - mult);
+        return graph.nodes[name];
     }
-    for (let i = 1; i < e.points.length; i++)
-    {
-        let last = e.points[i - 1];
-        let nxt = e.points[i];
-        let meme = new LineComponent(c, last.x, last.y, nxt.x, nxt.y);
-        meme.draw();
+
+    for (let edge of dagre_g.edges()){
+        let e = dagre_g.edge(edge);
+        for (let i = 0; i < e.points.length; i++)
+        {
+            let mult = (e.points.length - 1 - i) / (e.points.length - 1);
+            e.points[i].x += graph.nodes[edge.v].offx * mult + graph.nodes[edge.w].offx * (1 - mult);
+            e.points[i].y += graph.nodes[edge.v].offy * mult + graph.nodes[edge.w].offy * (1 - mult);
+        }
+        for (let i = 1; i < e.points.length; i++)
+        {
+            let last = e.points[i - 1];
+            let nxt = e.points[i];
+            let meme = new LineComponent(cont, last.x, last.y, nxt.x, nxt.y);
+            meme.draw();
+        }
+    }
+
+    for (let k in graph.nodes) {
+        let xy = GetXYKey(graph, k);
+        let node = new NodeComponent(cont, xy.x - xy.width / 2, xy.y - xy.height / 2, xy.label);
+        node.draw();
     }
 }
 
-for (let k in graph.nodes) {
-    let xy = GetXYKey(graph, k);
-    let node = new NodeComponent(c, xy.x - xy.width / 2, xy.y - xy.height / 2, xy.label);
-    node.draw();
+let WX = 8;
+let WY = 2;
+
+function do_graph_processing(cont, graph)
+{
+    function getScreenCoords(screenIdx)
+    {
+        return {x: screenIdx % WX, y: Math.floor(screenIdx / WX)};
+    }
+
+    function getIdx(pos)
+    {
+        return pos.y * WX + pos.x;
+    }
+
+    function calcScore(key, pos)
+    {
+        let score = 0;
+        let thisidx = getIdx(pos);
+        for (let okey in graph.nodes)
+        {
+            if (okey == key)
+                continue;
+            let node = graph.nodes[okey];
+            if (thisidx == node.screen)
+                score += 2;
+        }
+
+        for (let edge of graph.edges)
+        {
+            if (edge[0] != key || edge[1] != key)
+                continue;
+            let okey = (edge[0] == key ? edge[1] : edge[0]);
+            let onode = graph.nodes[okey];
+            let onodepos = getScreenCoords(onode.screen);
+            score -= 2;
+            score += Math.abs(onodepos.x - pos.x) + Math.abs(onodepos.y - pos.y);
+        }
+        return score;
+    }
+
+    for (let key in graph.nodes)
+    {
+        graph.nodes[key].screen = 0;
+    }
+
+    let iter = 0;
+    while (true)
+    {
+        if (iter > 1000)
+            break;
+        for (let key in graph.nodes)
+        {
+            iter += 1;
+            if (iter > 1000)
+                break;
+            let idx = graph.nodes[key].screen;
+            let mainpos = getScreenCoords(idx);
+            let bestscore = calcScore(key, mainpos);
+            let bestpos = mainpos;
+
+            for (let dx of [-1, 0, 1])
+            {
+                for (let dy of [-1, 0, 1])
+                {
+                    let newpos = {x: mainpos.x + dx, y: mainpos.y + dy};
+                    if (newpos.x < 0 || newpos.x >= WX || newpos.y < 0 || newpos.y >= WY)
+                    {
+                        continue;
+                    }
+                    let score = calcScore(key, newpos);
+                    if (score < bestscore)
+                    {
+                        bestscore = score;
+                        bestpos = newpos;
+                    }
+                }
+            }
+            graph.nodes[key].screen = getIdx(bestpos);
+        }
+    }
+
+    for (let i = 0; i < WX * WY; i++)
+    {
+        let localcont = new PIXI.Container();
+        let spos = getScreenCoords(i);
+        localcont.x = spos.x * Math.floor(window.innerWidth / WX);
+        localcont.y = spos.y * Math.floor(window.innerHeight / WY);
+
+        let subgraph = {
+            nodes: {},
+            edges: [],
+        };
+
+        for (let key in graph.nodes)
+        {
+            if (graph.nodes[key].screen != i)
+                continue;
+            subgraph.nodes[key] = graph.nodes[key];
+        }
+
+        for (let edge of graph.edges)
+        {
+            if (graph.nodes[edge[0]].screen != i ||
+                graph.nodes[edge[1]].screen != i)
+            {
+                continue;
+            }
+            subgraph.edges.push(edge);
+        }
+        draw_graph(localcont, subgraph);
+        console.log(subgraph);
+        cont.addChild(localcont);
+    }
 }
+
+
+let cont = new PIXI.Container();
+app.stage.addChild(cont);
+do_graph_processing(cont, graph);
+
 console.log(graph);
