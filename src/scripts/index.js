@@ -16,11 +16,23 @@ let app = new PIXI.Application({width: window.innerWidth, height: window.innerHe
 //Add the canvas that Pixi automatically created for you to the HTML document
 document.body.appendChild(app.view);
 
-const graphics = new PIXI.Graphics();
+class RectangleComponent {
+    constructor(x, y, w, h, color=0xDE3249) {
+        this.graphics = new PIXI.Graphics();
+        this.x = x;
+        this.y = y;
+        this.width = w;
+        this.height = h;
+        this.color = color;
+        app.stage.addChild(this.graphics);
+    }
 
-// Rectangle
-graphics.beginFill(0xDE3249);
-graphics.drawRect(50, 50, 100, 100);
-graphics.endFill();
+    draw() {
+        this.graphics.beginFill(this.color);
+        this.graphics.drawRect(this.x, this.y, this.width, this.height);
+        this.graphics.endFill();
+    }
+}
 
-app.stage.addChild(graphics);
+let rect = new RectangleComponent(10, 20, 300, 300);
+rect.draw();
