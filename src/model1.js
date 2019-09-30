@@ -63,15 +63,13 @@ export default {
     edges : [ {
             from : 'start1',
             to : 'a',
-            label : "Test label",
-            dashes : [10],
         }, {
             from : 'a',
             to : 'b',
-            label : "Ayy lmao",
         }, {
            from : 'details',
            to : 'a',
+           dashes : [10],
         }, {
             from : 'b',
             to : 'end1',
@@ -84,9 +82,11 @@ export default {
         }, {
             from : 'c',
             to : 'd',
+            dashes : [10],
         }, {
             from : 'd',
             to : 'e',
+            dashes : [10],
         }, {
             from : 'e',
             to : 'end2',
@@ -115,26 +115,32 @@ export default {
             from : 'a',
             to : 'c',
             label : "Bank acct details",
+            dashes : [10],
         },{
             from : 'a',
             to : 'c',
             label : "Bank acct details",
+            dashes : [10],
         },{
             from : 'e',
             to : 'g',
             label : "Bank acct details",
+            dashes : [10],
         },{
             from : 'f',
             to : 'e',
             label : "Request for bank details",
+            dashes : [10],
         },{
             from : 'h',
             to : 'i',
             label : "Bank acct details",
+            dashes : [10],
         },{
             from : 'j',
             to : 'b',
-            label : "Bank acct details",
+            label : "Confirmation",
+            dashes : [10],
         }
     ]
 };
