@@ -1,5 +1,5 @@
 import '../styles/index.scss';
-import * as PIXI from 'pixi.js';
+import * as PIXI from 'pixi.js-legacy';
 var dagre = require('dagre');
 
 let type = "WebGL";
@@ -174,6 +174,26 @@ let graph = {
     ]
 };
 
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+}
+
+let NODE_CNT = 100
+
+for (let i = 0; i < NODE_CNT; i++)
+{
+    graph.nodes[i + ''] = {
+        label: i + ''
+    };
+}
+
+for (let i = 0; i < NODE_CNT; i++)
+{
+    graph.edges.push([getRandomInt(0, NODE_CNT), getRandomInt(0, NODE_CNT)]);
+}
+
 function preprocess(graph){
     for (let node_key in graph['nodes'])
     {
@@ -211,7 +231,7 @@ function GetXYKey(graph, name)
 let c = new PIXI.Container();
 c.x = 10;
 c.y = 10;
-app.stage.addChild(c)
+app.stage.addChild(c);
 
 for (let i = 0; i < graph.edges.length; i++) {
     let axy = GetXYKey(graph, graph.edges[i][0]);
@@ -225,4 +245,4 @@ for (let k in graph.nodes) {
     let node = new NodeComponent(c, xy.x - xy.width / 2, xy.y - xy.height / 2, xy.label);
     node.draw();
 }
-console.log(graph)
+console.log(graph);
