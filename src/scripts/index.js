@@ -2,6 +2,9 @@ import '../styles/index.scss';
 import * as PIXI from 'pixi.js-legacy';
 var dagre = require('dagre');
 
+const WX = 8;
+const WY = 2;
+
 let type = "WebGL";
 if(!PIXI.utils.isWebGLSupported()){
     type = "canvas";
@@ -252,8 +255,8 @@ function preprocess(graph){
 
     dagre.layout(g);
 
-    delatGovno(graph, 8, 75, "x", "width", window.innerWidth);
-    delatGovno(graph, 2, 75, "y", "height", window.innerHeight);
+    delatGovno(graph, WX, 75, "x", "width", window.innerWidth);
+    delatGovno(graph, WY, 75, "y", "height", window.innerHeight);
     return g;
 }
 
@@ -289,9 +292,6 @@ function draw_graph(cont, graph)
         node.draw();
     }
 }
-
-let WX = 8;
-let WY = 2;
 
 function do_graph_processing(cont, graph)
 {
