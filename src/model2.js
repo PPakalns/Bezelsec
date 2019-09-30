@@ -22,12 +22,22 @@ let graph = {
             label: 'Color sit ammet'
         }
     },
-    edges : [
-        ['a', 'b'],
-        ['a', 'c'],
-        ['a', 'd'],
-        ['a', 'e'],
-        ['a', 'f'],
+    edges : [ {
+            from : 'a',
+            to : 'b',
+        }, {
+            from : 'a',
+            to : 'c',
+        }, {
+            from : 'a',
+            to : 'd',
+        }, {
+            from : 'a',
+            to : 'e',
+        }, {
+            from : 'a',
+            to : 'f',
+        }
     ]
 };
 
@@ -49,7 +59,7 @@ for (let i = 0; i < NODE_CNT; i++)
 
 for (let i = 0; i < EDGE_CNT; i++)
 {
-    graph.edges.push([getRandomInt(0, i), i]);
+    graph.edges.push({from: getRandomInt(0, i), to: i});
 }
 
 export default graph;

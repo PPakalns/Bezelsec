@@ -60,22 +60,57 @@ export default {
             label: 'End'
         },
     },
-    edges : [
-        ['start1', 'a'],
-        ['a', 'b'],
-        ['details', 'a'],
-        ['b', 'end1'],
-        ['start2', 'c'],
-        ['c', 'e'],
-        ['c', 'd'],
-        ['d', 'e'],
-        ['e', 'end2'],
-        ['start3', 'f'],
-        ['f', 'g'],
-        ['g', 'h'],
-        ['h', 'end3'],
-        ['start4', 'i'],
-        ['i', 'j'],
-        ['j', 'end4'],
+    edges : [ {
+            from : 'start1',
+            to : 'a',
+            label : "Test label",
+            dashes : [10],
+        }, {
+            from : 'a',
+            to : 'b',
+            label : "Ayy lmao",
+        }, {
+           from : 'details',
+           to : 'a',
+        }, {
+            from : 'b',
+            to : 'end1',
+        }, {
+            from : 'start2',
+            to : 'c',
+        }, {
+            from : 'c', 
+            to : 'e',
+        }, {
+            from : 'c',
+            to : 'd',
+        }, {
+            from : 'd',
+            to : 'e',
+        }, {
+            from : 'e',
+            to : 'end2',
+        }, {
+            from : 'start3',
+            to : 'f',
+        }, {
+            from : 'f',
+            to : 'g',
+        }, {
+            from : 'g',
+            to : 'h',
+        }, {
+            from : 'h',
+            to : 'end3',
+        }, {
+            from : 'start4',
+            to : 'i',
+        }, {
+            from : 'i',
+            to : 'j',
+        }, {
+            from : 'j',
+            to : 'end4',
+        }
     ]
 };

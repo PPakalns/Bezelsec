@@ -6,9 +6,9 @@ import ex2 from '../model2.js';
 
 global.WX = 1;
 global.WY = 1;
-global.SWX = 8
-global.SWY = 2
-global.order = 'LR'
+global.SWX = 8;
+global.SWY = 2;
+global.order = 'LR';
 
 let type = "WebGL";
 if(!PIXI.utils.isWebGLSupported()){
@@ -17,8 +17,8 @@ if(!PIXI.utils.isWebGLSupported()){
 
 PIXI.utils.sayHello(type);
 
-const WIDTH = window.innerWidth
-const HEIGHT = window.innerHeight
+const WIDTH = window.innerWidth;
+const HEIGHT = window.innerHeight;
 
 //Create a Pixi Application
 let app = new PIXI.Application({width: WIDTH, height: HEIGHT});
@@ -27,19 +27,20 @@ let app = new PIXI.Application({width: WIDTH, height: HEIGHT});
 document.body.appendChild(app.view);
 
 class RectangleComponent {
-    constructor(cont, x, y, w, h, color=0xdddd00) {
+    constructor(cont, x, y, w, h, color=0xdddd00, radius=20) {
         this.graphics = new PIXI.Graphics();
         this.x = x;
         this.y = y;
         this.width = w;
         this.height = h;
         this.color = color;
+        this.radius = radius;
         cont.addChild(this.graphics);
     }
 
     draw() {
         this.graphics.beginFill(this.color);
-        this.graphics.drawRoundedRect(this.x, this.y, this.width, this.height, 20);
+        this.graphics.drawRoundedRect(this.x, this.y, this.width, this.height, this.radius);
         this.graphics.endFill();
     }
 
@@ -72,7 +73,7 @@ void main() {
 `;
 
 class LineComponent {
-    constructor(cont, x1, y1, x2, y2, color = 0xFFFF00, width = 420/69, transparency = 1, offset = 0.5) {
+    constructor(cont, x1, y1, x2, y2, lineStops = [], lineOffset = 0, color = 0xFFFF00, width = 420/69, transparency = 1, offset = 0.5) {
         //this.graphics = new PIXI.Graphics();
         this.graphics2 = new PIXI.Graphics();
         //this.blur = new PIXI.filters.BlurFilter();
@@ -83,6 +84,16 @@ class LineComponent {
         this.y1 = y1;
         this.x2 = x2;
         this.y2 = y2;
+        this.normalizedX = x2 - x1;
+        this.normalizedY = y2 - y1;
+        this.length = Math.sqrt(this.normalizedX * this.normalizedX + this.normalizedY * this.normalizedY);
+        this.normalizedX /= this.length;
+        this.normalizedY /= this.length;
+        this.lineStops = lineStops;
+        if (!this.lineStops) {
+            this.lineStops = [];
+        }
+        this.lineOffset = lineOffset;
         this.color = color;
         this.width = width;
         this.transparency = transparency;
@@ -95,8 +106,38 @@ class LineComponent {
         //this.graphics.filters.push(this.blur);
         //this.graphics.lineStyle(this.width * 2, this.color, this.transparency, this.offset);
         this.graphics2.lineStyle(this.width, this.color, this.transparency, this.offset);
-        this.graphics2.moveTo(this.x1, this.y1);
-        this.graphics2.lineTo(this.x2, this.y2);
+        if (this.lineStops.length == 0) {
+            this.graphics2.moveTo(this.x1, this.y1);
+            this.graphics2.lineTo(this.x2, this.y2);
+            return 0;
+        } else {
+            let sum = 0;
+            for (let i = 0; i < this.lineStops.length; i++) {
+                sum += this.lineStops[i];
+            }
+            let doDraw = ((Math.floor(this.offset / sum) * this.lineStops.length) % 2) == 0;
+            let offsetRem = this.offset % sum;
+            let p = 0;
+            while (p < this.lineStops.length && this.lineStops[p] <= offsetRem) {
+                offsetRem -= this.lineStops[p];
+                p++;
+                doDraw = !doDraw;
+            }
+
+            let taken = 0;
+            while (this.length > taken) {
+                let remLen = Math.min(this.length - taken, this.lineStops[p] - offsetRem);
+                if (doDraw) {
+                    this.graphics2.moveTo(this.x1 + this.normalizedX * taken, this.y1 + this.normalizedY * taken);
+                    this.graphics2.lineTo(this.x1 + this.normalizedX * (taken + remLen), this.y1 + this.normalizedY * (taken + remLen));
+                }
+                doDraw = !doDraw;
+                taken += remLen;
+                p = (p + 1) % this.lineStops.length;
+            }
+
+            return this.offset + taken;
+        }
         //this.graphics.moveTo(this.x1, this.y1);
         //this.graphics.lineTo(this.x2, this.y2);
         //this.graphics.filters.pop();
@@ -104,12 +145,12 @@ class LineComponent {
 }
 
 class TextComponent {
-    constructor(cont, x, y, text) {
+    constructor(cont, x, y, text, color = "#000000", size = 54) {
         const style = new PIXI.TextStyle({
             fontFamily: 'Verdana',
-            fontSize: 54,
+            fontSize: size,
             fontWeight: 'bold',
-            fill: '#000000', // gradient
+            fill: color, // gradient
             wordWrap: true,
             wordWrapWidth: 440,
         });
@@ -126,11 +167,11 @@ class TextComponent {
 
 class NodeComponent {
     constructor (cont, x, y, text) {
-        this.c = new PIXI.Container();;;
+        this.c = new PIXI.Container();
         this.c.x = x;
         this.c.y = y;
 
-        this.rect = new RectangleComponent(this.c, 0, 0, 1, 1);
+        this.rect = new RectangleComponent(this.c, 0, 0, 1, 1, 0xdddd00, 0);
         this.text = new TextComponent(this.c, 5, 5, text);
 
         let bounds = this.text.getBounds();
@@ -154,7 +195,7 @@ class NodeComponent {
 
 let graph = ex1;
 
-function delatGovno(graph, screens, padding, pos, size, appSize) {
+function alterGeometryForBezels(graph, screens, padding, pos, size, appSize) {
     let sortedNodes = [];
     for (var k in graph.nodes) {
         sortedNodes.push(k);
@@ -207,13 +248,18 @@ function preprocess(graph){
     }
 
     for (let i = 0; i < graph.edges.length; i++) {
-        g.setEdge(graph.edges[i][0], graph.edges[i][1]);
+        graph.edges[i].labelpos = "c";
+        graph.edges[i].x = 0;
+        graph.edges[i].y = 0;
+        graph.edges[i].width = 69;
+        graph.edges[i].height = 69;
+        g.setEdge(graph.edges[i].from, graph.edges[i].to, graph.edges[i]);
     }
 
     dagre.layout(g);
 
-    delatGovno(graph, global.SWX, 75, "x", "width", WIDTH);
-    delatGovno(graph, global.SWY, 75, "y", "height", HEIGHT);
+    alterGeometryForBezels(graph, global.SWX, 75, "x", "width", WIDTH);
+    alterGeometryForBezels(graph, global.SWY, 75, "y", "height", HEIGHT);
     return g;
 }
 
@@ -234,13 +280,30 @@ function draw_graph(cont, graph)
             e.points[i].x += graph.nodes[edge.v].offx * mult + graph.nodes[edge.w].offx * (1 - mult);
             e.points[i].y += graph.nodes[edge.v].offy * mult + graph.nodes[edge.w].offy * (1 - mult);
         }
+        let textMeme = new TextComponent(cont, e.x, e.y, e.label, "#DDDD00", 36);
+        //textMeme.draw();
+        let offset = 0;
         for (let i = 1; i < e.points.length; i++)
         {
             let last = e.points[i - 1];
             let nxt = e.points[i];
-            let meme = new LineComponent(cont, last.x, last.y, nxt.x, nxt.y);
-            meme.draw();
+            let meme = new LineComponent(cont, last.x, last.y, nxt.x, nxt.y, e.dashes, offset);
+            offset = meme.draw();
         }
+        let last2 = e.points[e.points.length - 2];
+        let last = e.points[e.points.length - 1];
+        let dirX = last.x - last2.x;
+        let dirY = last.y - last2.y;
+        let len = Math.sqrt(dirX * dirX + dirY * dirY);
+        dirX /= len;
+        dirY /= len;
+        let angle = 150 / 180 * Math.PI;
+        let sin = Math.sin(angle);
+        let cos = Math.cos(angle);
+        let meme2 = new LineComponent(cont, last.x, last.y, last.x + (dirX * cos - dirY * sin) * 30, last.y + (dirX * sin + dirY * cos) * 30);
+        meme2.draw();
+        let meme3 = new LineComponent(cont, last.x, last.y, last.x + (dirX * cos + dirY * sin) * 30, last.y + (-dirX * sin + dirY * cos) * 30);
+        meme3.draw();
     }
 
     for (let k in graph.nodes) {
@@ -277,9 +340,9 @@ function do_graph_processing(cont, graph)
 
         for (let edge of graph.edges)
         {
-            if (edge[0] != key && edge[1] != key)
+            if (edge.from != key && edge.to != key)
                 continue;
-            let okey = (edge[0] == key ? edge[1] : edge[0]);
+            let okey = (edge.from == key ? edge.to : edge.from);
             let onode = graph.nodes[okey];
             let onodepos = getScreenCoords(onode.screen);
             score -= 3;
@@ -352,8 +415,8 @@ function do_graph_processing(cont, graph)
 
         for (let edge of graph.edges)
         {
-            if (graph.nodes[edge[0]].screen != i ||
-                graph.nodes[edge[1]].screen != i)
+            if (graph.nodes[edge.from].screen != i ||
+                graph.nodes[edge.to].screen != i)
             {
                 continue;
             }
@@ -376,12 +439,12 @@ function do_graph_processing(cont, graph)
 
     for (let edge of graph.edges)
     {
-        if (graph.nodes[edge[0]].screen == graph.nodes[edge[1]].screen)
+        if (graph.nodes[edge.from].screen == graph.nodes[edge.to].screen)
         {
             continue;
         }
-        let e0 = getNodePos(edge[0]);
-        let e1 = getNodePos(edge[1]);
+        let e0 = getNodePos(edge.from);
+        let e1 = getNodePos(edge.to);
         let line = new LineComponent(cont, e0.x, e0.y, e1.x, e1.y);
         line.draw();
     }
