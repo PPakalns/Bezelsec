@@ -149,10 +149,28 @@ let graph = {
         },
         'b' : {
             label: 'Color sit ammet'
+        },
+        'c' : {
+            label: 'Lorem Ipsum'
+
+        },
+        'd' : {
+            label: 'Color sit ammet'
+        },
+        'e' : {
+            label: 'Lorem Ipsum'
+
+        },
+        'f' : {
+            label: 'Color sit ammet'
         }
     },
     edges : [
         ['a', 'b'],
+        ['a', 'c'],
+        ['a', 'd'],
+        ['a', 'e'],
+        ['a', 'f'],
     ]
 };
 
@@ -165,28 +183,46 @@ function preprocess(graph){
         node.width = c.getBounds().width;
         node.height = c.getBounds().height;
     }
+    let g = new dagre.graphlib.Graph();
+    g.setGraph({});
+    g.setDefaultEdgeLabel(function() {
+        return {};
+    });
+
+    for (let k in graph.nodes) {
+        g.setNode(k, graph.nodes[k]);
+    }
+
+    for (let i = 0; i < graph.edges.length; i++) {
+        g.setEdge(graph.edges[i][0], graph.edges[i][1]);
+    }
+
+    dagre.layout(g);
     return graph;
 }
 
-preprocess(graph);
+graph = preprocess(graph);
 
-let meme = new LineComponent(app.stage, 13, 69, 420, 69);
-meme.draw();
-let node = new NodeComponent(app.stage, 20, 30, "Lorem Ipsum");
-node.draw();
-
-let g = new dagre.graphlib.Graph();
-g.setGraph({});
-g.setDefaultEdgeLabel(function() {
-    return {};
-});
-
-for (let k in graph.nodes) {
-    g.setNode(k, graph.nodes[k]);
+function GetXYKey(graph, name)
+{
+    return graph.nodes[name];
 }
+
+let c = new PIXI.Container();
+c.x = 10;
+c.y = 10;
+app.stage.addChild(c)
 
 for (let i = 0; i < graph.edges.length; i++) {
-    g.setEdge(graph.edges[i][0], graph.edges[i][1]);
+    let axy = GetXYKey(graph, graph.edges[i][0]);
+    let bxy = GetXYKey(graph, graph.edges[i][1]);
+    let meme = new LineComponent(c, axy.x, axy.y, bxy.x, bxy.y);
+    meme.draw();
 }
 
-dagre.layout(g);
+for (let k in graph.nodes) {
+    let xy = GetXYKey(graph, k);
+    let node = new NodeComponent(c, xy.x - xy.width / 2, xy.y - xy.height / 2, xy.label);
+    node.draw();
+}
+console.log(graph)
