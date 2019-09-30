@@ -62,12 +62,12 @@ void main() {
 
 class LineComponent {
     constructor(cont, x1, y1, x2, y2, color = 0xFFFF00, width = 420/69, transparency = 1, offset = 0.5) {
-        this.graphics = new PIXI.Graphics();
+        //this.graphics = new PIXI.Graphics();
         this.graphics2 = new PIXI.Graphics();
-        this.blur = new PIXI.filters.BlurFilter();
-        this.blur.blur = width * 2;
-        this.blur.quality = 10;
-        this.graphics.filters = [this.blur];
+        //this.blur = new PIXI.filters.BlurFilter();
+        //this.blur.blur = width * 2;
+        //this.blur.quality = 10;
+        //this.graphics.filters = [this.blur];
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;
@@ -77,17 +77,17 @@ class LineComponent {
         this.transparency = transparency;
         this.offset = offset;
         cont.addChild(this.graphics2);
-        cont.addChild(this.graphics);
+        //cont.addChild(this.graphics);
     }
 
     draw() {
         //this.graphics.filters.push(this.blur);
-        this.graphics.lineStyle(this.width * 2, this.color, this.transparency, this.offset);
+        //this.graphics.lineStyle(this.width * 2, this.color, this.transparency, this.offset);
         this.graphics2.lineStyle(this.width, this.color, this.transparency, this.offset);
         this.graphics2.moveTo(this.x1, this.y1);
         this.graphics2.lineTo(this.x2, this.y2);
-        this.graphics.moveTo(this.x1, this.y1);
-        this.graphics.lineTo(this.x2, this.y2);
+        //this.graphics.moveTo(this.x1, this.y1);
+        //this.graphics.lineTo(this.x2, this.y2);
         //this.graphics.filters.pop();
     }
 }
