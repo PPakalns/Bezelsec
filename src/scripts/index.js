@@ -43,12 +43,24 @@ class RectangleComponent {
         this.graphics.drawRoundedRect(this.x, this.y, this.width, this.height, this.radius);
         this.graphics.endFill();
     }
+}
 
-    setBounds(bounds) {
-        this.x = bounds.x;
-        this.y = bounds.y;
-        this.width = bounds.width;
-        this.height = bounds.height;
+class EllipseComponent {
+    constructor(cont, x, y, w, h, color=0xdddd00) {
+        this.graphics = new PIXI.Graphics();
+        this.x = x;
+        this.y = y;
+        this.width = w;
+        this.height = h;
+        this.color = color;
+        cont.addChild(this.graphics);
+    }
+
+    draw() {
+        this.graphics.lineStyle(0, 0xFFFFFF, 1);
+        this.graphics.beginFill(this.color, 1);
+        this.graphics.drawEllipse(this.x, this.y, this.width, this.height);
+        this.graphics.endFill();
     }
 }
 
@@ -166,26 +178,27 @@ class TextComponent {
 }
 
 class NodeComponent {
-    constructor (cont, x, y, text) {
+    constructor (cont, x, y, text, shape='rectangle') {
         this.c = new PIXI.Container();
         this.c.x = x;
         this.c.y = y;
-
-        this.rect = new RectangleComponent(this.c, 0, 0, 1, 1, 0xdddd00, 0);
-        this.text = new TextComponent(this.c, 5, 5, text);
-
+        let tmpc = new PIXI.Container();
+        this.text = new TextComponent(tmpc, 5, 5, text);
         let bounds = this.text.getBounds();
-        bounds.x = 0;
-        bounds.y = 0;
-        bounds.width += 10;
-        bounds.height += 10;
-        this.rect.setBounds(bounds);
 
+        if (shape == 'rectangle')
+        {
+            this.shape = new RectangleComponent(this.c, 0, 0, bounds.width + 10, bounds.height + 10, 0xdddd00, 0);
+        }
+        else
+            this.shape = new EllipseComponent(this.c, bounds.width / 2, bounds.height / 2, bounds.width / 1.5, bounds.height / 1.5, 0xdddd00);
+
+        this.c.addChild(tmpc);
         cont.addChild(this.c);
     }
 
     draw() {
-        this.rect.draw();
+        this.shape.draw();
     }
 
     getBounds() {
@@ -228,7 +241,7 @@ function preprocess(graph){
     {
         let node = graph['nodes'][node_key];
         let c = new PIXI.Container();
-        new NodeComponent(c, 0, 0, node.label);
+        new NodeComponent(c, 0, 0, node.label, node['shape'] || 'rectangle');
         node.width = c.getBounds().width;
         node.height = c.getBounds().height;
     }
@@ -308,7 +321,7 @@ function draw_graph(cont, graph)
 
     for (let k in graph.nodes) {
         let xy = GetXYKey(graph, k);
-        let node = new NodeComponent(cont, xy.x - xy.width / 2, xy.y - xy.height / 2, xy.label);
+        let node = new NodeComponent(cont, xy.x - xy.width / 2, xy.y - xy.height / 2, xy.label, xy.shape || 'rectangle');
         node.draw();
     }
 }

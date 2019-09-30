@@ -1,7 +1,8 @@
 export default {
     nodes: {
         'start1' : {
-            label: 'Start'
+            label: 'Start',
+            shape: 'circle'
         },
         'a' : {
             label: 'Enter bank details'
@@ -14,10 +15,12 @@ export default {
             label: 'Bank acct details'
         },
         'end1' : {
-            label: 'End'
+            label: 'End',
+            shape: 'circle'
         },
         'start2' : {
-            label: 'Start'
+            label: 'Start',
+            shape: 'circle'
         },
         'c' : {
             label: 'Stores bank account details'
@@ -30,10 +33,12 @@ export default {
             label: 'Pass toll gate'
         },
         'end2' : {
-            label: 'End'
+            label: 'End',
+            shape: 'circle'
         },
         'start3' : {
-            label: 'Start'
+            label: 'Start',
+            shape: 'circle'
         },
         'f' : {
             label: 'Request bank details'
@@ -45,10 +50,12 @@ export default {
             label: 'Request Payment'
         },
         'end3' : {
-            label: 'End'
+            label: 'Pass toll gate',
+            shape: 'circle'
         },
         'start4' : {
-            label: 'Start'
+            label: 'Start',
+            shape: 'circle'
         },
         'i' : {
             label: 'Perform payment transaction'
@@ -57,7 +64,8 @@ export default {
             label: 'Inform about transaction'
         },
         'end4' : {
-            label: 'End'
+            label: 'End',
+            shape: 'circle'
         },
     },
     edges : [ {
