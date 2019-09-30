@@ -32,6 +32,13 @@ class RectangleComponent {
         this.graphics.drawRect(this.x, this.y, this.width, this.height);
         this.graphics.endFill();
     }
+
+    setBounds(bounds) {
+        this.x = bounds.x;
+        this.y = bounds.y;
+        this.width = bounds.width;
+        this.height = bounds.height;
+    }
 }
 
 const FRAGMENT_SHADER_LineComponent_Lighting = `
@@ -88,7 +95,7 @@ class LineComponent {
 
 class TextComponent {
     constructor(x, y, text) {
-        this.graphics = new PIXI.Graphics()
+        this.graphics = new PIXI.Graphics();
         const style = new PIXI.TextStyle({
             fontFamily: 'Arial',
             fontSize: 36,
@@ -102,10 +109,31 @@ class TextComponent {
         this.richText.y = y;
         app.stage.addChild(this.richText);
     }
+
+    getBounds() {
+        return this.richText.getBounds();
+    }
 }
 
-let rect = new RectangleComponent(10, 20, 300, 300);
-rect.draw();
+class NodeComponent {
+    constructor (x, y, text) {
+        this.rect = new RectangleComponent(0, 0, 1, 1);
+        this.text = new TextComponent(x, y, text);
+        let bounds = this.text.getBounds();
+        bounds.x -= 10;
+        bounds.y -= 7;
+        bounds.width += 20;
+        bounds.height += 15;
+        this.rect.setBounds(bounds);
+    }
+
+    draw() {
+        this.rect.draw();
+    }
+}
+
 let meme = new LineComponent(13, 69, 420, 69);
 meme.draw();
-let text = new TextComponent(20, 30, "Lorem Ipsum");
+let node = new NodeComponent(20, 30, "Lorem Ipsum");
+node.draw();
+
