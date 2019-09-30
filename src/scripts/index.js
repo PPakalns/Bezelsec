@@ -252,11 +252,10 @@ function preprocess(graph){
 
     delatGovno(8, 75, "x", "width", window.innerWidth);
     delatGovno(2, 75, "y", "height", window.innerHeight);
-
-    return graph;
+    return g;
 }
 
-graph = preprocess(graph);
+let dagre_g = preprocess(graph);
 
 function GetXYKey(graph, name)
 {
@@ -268,11 +267,15 @@ c.x = 10;
 c.y = 10;
 app.stage.addChild(c);
 
-for (let i = 0; i < graph.edges.length; i++) {
-    let axy = GetXYKey(graph, graph.edges[i][0]);
-    let bxy = GetXYKey(graph, graph.edges[i][1]);
-    let meme = new LineComponent(c, axy.x, axy.y, bxy.x, bxy.y);
-    meme.draw();
+for (let edge of dagre_g.edges()){
+    let e = dagre_g.edge(edge)
+    for (let i = 1; i < e.points.length; i=i + 1)
+    {
+        let last = e.points[i - 1];
+        let nxt = e.points[i];
+        let meme = new LineComponent(c, last.x, last.y, nxt.x, nxt.y);
+        meme.draw();
+    }
 }
 
 for (let k in graph.nodes) {
