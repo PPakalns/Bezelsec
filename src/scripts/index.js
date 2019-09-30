@@ -17,7 +17,7 @@ let app = new PIXI.Application({width: window.innerWidth, height: window.innerHe
 document.body.appendChild(app.view);
 
 class RectangleComponent {
-    constructor(x, y, w, h, color=0xDE3249) {
+    constructor(x, y, w, h, color=0xdddd00) {
         this.graphics = new PIXI.Graphics();
         this.x = x;
         this.y = y;
@@ -55,7 +55,26 @@ class LineComponent {
     }
 }
 
+class TextComponent {
+    constructor(x, y, text) {
+        this.graphics = new PIXI.Graphics()
+        const style = new PIXI.TextStyle({
+            fontFamily: 'Arial',
+            fontSize: 36,
+            fontWeight: 'bold',
+            fill: '#ffffff', // gradient
+            wordWrap: true,
+            wordWrapWidth: 440,
+        });
+        this.richText = new PIXI.Text(text, style);
+        this.richText.x = x;
+        this.richText.y = y;
+        app.stage.addChild(this.richText);
+    }
+}
+
 let rect = new RectangleComponent(10, 20, 300, 300);
 rect.draw();
 let meme = new LineComponent(13, 69, 420, 1337);
 meme.draw();
+let text = new TextComponent(20, 30, "Lorem Ipsum");
