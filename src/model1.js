@@ -2,57 +2,71 @@ export default {
     nodes: {
         'start1' : {
             label: 'Start',
-            shape: 'circle'
+            shape: 'circle',
+            border: 0x00FF2A
         },
         'a' : {
             label: 'Enter bank details',
-            color: 0xFF0000,
+            border: 0x00FF2A
         },
         'b' : {
-            label: 'Receive info about toll gate payment'
+            label: 'Receive info about toll gate payment',
+            border: 0x00FF2A
 
         },
         'details' : {
-            label: 'Bank acct details'
+            label: 'Bank acct details',
+            border: 0x00FF2A
         },
         'end1' : {
             label: 'End',
-            shape: 'circle'
+            shape: 'circle',
+            border: 0x00FF2A
         },
         'start2' : {
             label: 'Start',
-            shape: 'circle'
+            shape: 'circle',
+            border: 0x00FFEA
         },
         'c' : {
-            label: 'Stores bank account details'
+            label: 'Stores bank account details',
+            border: 0x00FFEA
 
         },
         'd' : {
-            label: 'Bank acct data storage'
+            label: 'Bank acct data storage',
+            border: 0x00FFEA
         },
         'e' : {
-            label: 'Pass toll gate'
+            label: 'Pass toll gate',
+            border: 0x00FFEA
         },
         'end2' : {
             label: 'End',
-            shape: 'circle'
+            shape: 'circle',
+            border: 0x00FFEA
         },
         'start3' : {
             label: 'Start',
-            shape: 'circle'
+            shape: 'circle',
+            border: 0x001FFF
         },
         'f' : {
-            label: 'Request bank details'
+            label: 'Request bank details',
+            border: 0x001FFF
         },
         'g' : {
-            label: 'Receive bank acct details'
+            label: 'Receive bank acct details',
+            border: 0x001FFF
         },
         'h' : {
-            label: 'Request Payment'
+            label: 'Request Payment',
+            border: 0x001FFF
         },
         'end3' : {
             label: 'End',
-            shape: 'circle'
+            shape: 'circle',
+            border: 0x001FFF
         },
         'start4' : {
             label: 'Start',

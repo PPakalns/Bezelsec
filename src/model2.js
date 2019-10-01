@@ -2,39 +2,48 @@ export default {
     nodes: {
         'start1' : {
             label: 'Start',
-            shape: 'circle'
+            shape: 'circle',
+            border: 0x00FF2A
         },
         'a' : {
             label: 'Enter bank details',
+            border: 0x00FF2A
         },
         'b' : {
-            label: 'Receive info about toll gate payment'
+            label: 'Receive info about toll gate payment',
+            border: 0x00FF2A
 
         },
         'details' : {
-            label: 'Bank acct details'
+            label: 'Bank acct details',
+            border: 0x00FF2A
         },
         'end1' : {
             label: 'End',
-            shape: 'circle'
+            shape: 'circle',
+            border: 0x00FF2A
         },
         'start2' : {
             label: 'Start',
-            shape: 'circle'
+            shape: 'circle',
+            border: 0x00FFEA
         },
         'c' : {
-            label: 'Stores bank account details'
-
+            label: 'Stores bank account details',
+            border: 0x00FFEA
         },
         'd' : {
-            label: 'Bank acct data storage'
+            label: 'Bank acct data storage',
+            border: 0x00FFEA
         },
         'e' : {
-            label: 'Pass toll gate'
+            label: 'Pass toll gate',
+            border: 0x00FFEA
         },
         'end2' : {
             label: 'End',
-            shape: 'circle'
+            shape: 'circle',
+            border: 0x00FFEA
         },
         'start3' : {
             label: 'Start',
