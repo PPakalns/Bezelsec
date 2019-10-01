@@ -53,7 +53,7 @@ let app = new PIXI.Application({width: WIDTH, height: HEIGHT, transparent: true}
 document.body.appendChild(app.view);
 
 class RectangleComponent {
-    constructor(cont, x, y, w, h, color=0xdddd00, radius=20, bordercolor=null) {
+    constructor(cont, x, y, w, h, color=0xdddd00, radius=20, bordercolor=undefined) {
         this.graphics = new PIXI.Graphics();
         this.x = x;
         this.y = y;
@@ -62,6 +62,9 @@ class RectangleComponent {
         this.color = color;
         this.radius = radius;
         this.bordercolor = bordercolor;
+        if (!this.bordercolor) {
+            this.bordercolor = 0x000000;
+        }
         cont.addChild(this.graphics);
     }
 
@@ -69,7 +72,7 @@ class RectangleComponent {
         this.graphics.beginFill(this.color);
         this.graphics.drawRoundedRect(this.x, this.y, this.width, this.height, this.radius);
         this.graphics.endFill();
-        if (this.bordercolor) {
+        if (typeof this.bordercolor == 'number') {
             this.graphics.lineStyle(420 / 69, this.bordercolor, 1, 0.5);
             this.graphics.moveTo(this.x, this.y);
             this.graphics.lineTo(this.x + this.width, this.y);
@@ -81,7 +84,7 @@ class RectangleComponent {
 }
 
 class EllipseComponent {
-    constructor(cont, x, y, w, h, color=0xdddd00, bordercolor=null) {
+    constructor(cont, x, y, w, h, color=0xdddd00, bordercolor=undefined) {
         this.graphics = new PIXI.Graphics();
         this.x = x;
         this.y = y;
@@ -89,12 +92,15 @@ class EllipseComponent {
         this.height = h;
         this.color = color;
         this.bordercolor = bordercolor;
+        if (!this.bordercolor) {
+            this.bordercolor = 0x000000;
+        }
         cont.addChild(this.graphics);
     }
 
     draw() {
         this.graphics.lineStyle(0, 0xFFFFFF, 1);
-        if (this.bordercolor) {
+        if (typeof this.bordercolor == 'number') {
             this.graphics.lineStyle(420 / 69, this.bordercolor, 1, 0.5);
         }
         this.graphics.beginFill(this.color, 1);
@@ -196,14 +202,15 @@ class LineComponent {
 }
 
 class TextComponent {
-    constructor(cont, x, y, text, color = "#000000", size = 54) {
+    constructor(cont, x, y, text, color = "#000000", size = 54, bold = true) {
         const style = new PIXI.TextStyle({
             fontFamily: 'Verdana',
             fontSize: size,
-            fontWeight: 'bold',
+            fontWeight: /*bold ? 'bold' : 'normal'*/'bold',
             fill: color, // gradient
             wordWrap: true,
             wordWrapWidth: 440,
+            align: "center",
         });
         this.richText = new PIXI.Text(text, style);
         this.richText.x = x;
@@ -402,7 +409,7 @@ function draw_graph(cont, graph)
             e.points[i].x += graph.nodes[edge.v].offx * mult + graph.nodes[edge.w].offx * (1 - mult);
             e.points[i].y += graph.nodes[edge.v].offy * mult + graph.nodes[edge.w].offy * (1 - mult);
         }
-        let textMeme = new TextComponent(cont, e.x, e.y, e.label, "#DDDD00", 36);
+        let textMeme = new TextComponent(cont, e.x, e.y, e.label, "#FFFFFF", 36, false);
         //textMeme.draw();
         let offset = 0;
         for (let i = 1; i < e.points.length; i++)
