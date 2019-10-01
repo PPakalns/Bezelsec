@@ -409,8 +409,6 @@ function draw_graph(cont, graph)
             e.points[i].x += graph.nodes[edge.v].offx * mult + graph.nodes[edge.w].offx * (1 - mult);
             e.points[i].y += graph.nodes[edge.v].offy * mult + graph.nodes[edge.w].offy * (1 - mult);
         }
-        let textMeme = new TextComponent(cont, e.x, e.y, e.label, "#FFFFFF", 36, false);
-        //textMeme.draw();
         let offset = 0;
         for (let i = 1; i < e.points.length; i++)
         {
@@ -433,6 +431,10 @@ function draw_graph(cont, graph)
         meme2.draw();
         let meme3 = new LineComponent(cont, last.x, last.y, last.x + (dirX * cos + dirY * sin) * 30, last.y + (-dirX * sin + dirY * cos) * 30);
         meme3.draw();
+
+        let textMeme2 = new TextComponent(cont, e.x + 3, e.y + 3, e.label, "#0000007F", 36, false);
+        let textMeme = new TextComponent(cont, e.x, e.y, e.label, "#FFFFFF", 36, false);
+        //textMeme.draw();
     }
 
     for (let k in graph.nodes) {
