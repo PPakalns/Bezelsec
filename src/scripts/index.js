@@ -142,7 +142,7 @@ void main() {
 `;
 
 class LineComponent {
-    constructor(cont, x1, y1, x2, y2, lineStops = [], lineOffset = 0, color = 0xFFFF00, width = 420/69, transparency = 1, offset = 0.5) {
+    constructor(cont, x1, y1, x2, y2, lineStops = [], lineOffset = 0, color = 0xdddd00, width = 420/69, transparency = 1, offset = 0.5) {
         //this.graphics = new PIXI.Graphics();
         this.graphics2 = new PIXI.Graphics();
         //this.blur = new PIXI.filters.BlurFilter();
@@ -444,8 +444,11 @@ function draw_graph(cont, graph)
         let meme3 = new LineComponent(cont, last.x, last.y, last.x + (dirX * cos + dirY * sin) * 30, last.y + (-dirX * sin + dirY * cos) * 30);
         meme3.draw();
 
-        let textMeme2 = new TextComponent(cont, e.x + 3, e.y + 3, e.label, "#0000007F", 36, false);
-        let textMeme = new TextComponent(cont, e.x, e.y, e.label, "#FFFFFF", 36, false);
+        let tmpc = new PIXI.Container();
+        let textMeme3 = new TextComponent(tmpc, 0, 0, e.label, "#FFFFFF", 36, false);
+        let bounds = textMeme3.getBounds();
+        let textMeme2 = new TextComponent(cont, e.x + 3 - bounds.width / 2 , e.y + 3 - bounds.height / 2, e.label, "#0000007F", 36, false);
+        let textMeme = new TextComponent(cont, e.x - bounds.width / 2, e.y - bounds.height / 2, e.label, "#FFFFFF", 36, false);
         //textMeme.draw();
     }
 
