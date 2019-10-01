@@ -229,7 +229,7 @@ export default {
         }, {
             from : 'add6',
             to : 'agree',
-            label : "Consent to process abk details",
+            label : "Consent to process bank details",
             dashes : [10],
         }, {
             from : 'j',
