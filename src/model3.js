@@ -207,7 +207,7 @@ export default {
             to : 'agree',
             label : "Consent to process abk details",
             dashes : [10],
-        }{
+        }, {
             from : 'j',
             to : 'b',
             label : "Confirmation",

@@ -4,6 +4,7 @@ var dagre = require('dagre');
 import ex0 from '../model0.js';
 import ex1 from '../model1.js';
 import ex2 from '../model2.js';
+import ex3 from '../model3.js';
 
 let WX = 1;
 let WY = 1;
@@ -24,6 +25,11 @@ let GRAPHS = [
     },
     {
         g: ex2,
+        WX: 1,
+        WY: 1,
+    },
+    {
+        g: ex3,
         WX: 1,
         WY: 1,
     }
