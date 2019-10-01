@@ -2,82 +2,98 @@ export default {
     nodes: {
         'start1' : {
             label: 'Start',
-            shape: 'circle'
+            shape: 'circle',
+            border: 0x00FF2A
         },
         'a' : {
             label: 'Enter bank details',
+            border: 0x00FF2A
         },
         'add1' : {
             label: 'Provide consent',
-            border: 0xFF0000,
+            color: 0xFF0000,
+            border: 0x00FF2A
         },
         'b' : {
-            label: 'Receive info about toll gate payment'
-
+            label: 'Receive info about toll gate payment',
+            border: 0x00FF2A
         },
         'details' : {
-            label: 'Bank acct details'
+            label: 'Bank acct details',
+            border: 0x00FF2A
         },
         'end1' : {
             label: 'End',
-            shape: 'circle'
+            shape: 'circle',
+            border: 0x00FF2A
         },
         'start2' : {
             label: 'Start',
-            shape: 'circle'
+            shape: 'circle',
+            border: 0x00FFEA
         },
         'c' : {
-            label: 'Stores bank account details'
-
+            label: 'Stores bank account details',
+            border: 0x00FFEA
         },
         'add2' : {
             label: 'Encrypt bank details',
-            border: 0xFF0000,
+            color: 0xFF0000,
+            border: 0x00FFEA,
         },
         'add3' : {
-            label: 'P. key'
-        },
-        'add4' : {
-            label: 'Encrypted details'
+            label: 'P. key',
+            border: 0x00FFEA
         },
         'd' : {
-            label: 'Bank acct data storage'
+            label: 'Bank acct data storage',
+            border: 0x00FFEA
         },
         'e' : {
-            label: 'Pass toll gate'
+            label: 'Pass toll gate',
+            border: 0x00FFEA
         },
         'end2' : {
             label: 'End',
-            shape: 'circle'
+            shape: 'circle',
+            border: 0x00FFEA
         },
         'start3' : {
             label: 'Start',
-            shape: 'circle'
+            shape: 'circle',
+            border: 0x001FFF
         },
         'add5' : {
             label: 'Recieve consent',
-            border: 0xFF0000,
+            color: 0xFF0000,
+            border: 0x001FFF
         },
         'add6' : {
             label: 'Establish legal ground for payment',
-            border: 0xFF0000,
+            color: 0xFF0000,
+            border: 0x001FFF
         },
         'f' : {
-            label: 'Request bank details'
+            label: 'Request bank details',
+            border: 0x001FFF
         },
         'g' : {
-            label: 'Receive bank acct details'
+            label: 'Receive bank acct details',
+            border: 0x001FFF
         },
         'h' : {
-            label: 'Request Payment'
+            label: 'Request Payment',
+            border: 0x001FFF
         },
         'log' : {
             label: 'Log req payment ops',
-            border: 0xFF0000,
+            color: 0xFF0000,
+            border: 0x001FFF
         },
         'end3' : {
             label: 'End',
-            shape: 'circle'
+            shape: 'circle',
+            border: 0x001FFF
         },
         'start4' : {
             label: 'Start',
@@ -85,11 +101,11 @@ export default {
         },
         'agree' : {
             label: 'Agree on legal grounds',
-            border: 0xFF0000,
+            color: 0xFF0000,
         },
         'dec' : {
             label: 'Decrypt bank acct details',
-            border: 0xFF0000,
+            color: 0xFF0000,
         },
         'key2' : {
             label: 'P. key'
@@ -128,6 +144,10 @@ export default {
             from : 'add2',
             to : 'c',
         }, {
+            from : 'add3',
+            to : 'add2',
+            dashes : [10],
+        }, {
             from : 'c', 
             to : 'e',
         }, {
@@ -152,8 +172,12 @@ export default {
             to : 'h',
         }, {
             from : 'h',
-            to : 'end3',
-        }, {
+            to : 'log',
+        }, 
+        {
+            from : 'log',
+            to : 'end',
+        },{
             from : 'start4',
             to : 'agree',
         }, {
