@@ -1,14 +1,34 @@
 import '../styles/index.scss';
 import * as PIXI from 'pixi.js-legacy';
 var dagre = require('dagre');
+import ex0 from '../model0.js';
 import ex1 from '../model1.js';
 import ex2 from '../model2.js';
 
-global.WX = 1;
-global.WY = 1;
+let WX = 1;
+let WY = 1;
 global.SWX = 8;
 global.SWY = 2;
 global.order = 'LR';
+
+let GRAPHS = [
+    {
+        g: ex0,
+        WX: 8,
+        WY: 2,
+    },
+    {
+        g: ex1,
+        WX: 1,
+        WY: 1,
+    },
+    {
+        g: ex2,
+        WX: 1,
+        WY: 1,
+    }
+];
+
 
 let type = "WebGL";
 if(!PIXI.utils.isWebGLSupported()){
@@ -414,12 +434,12 @@ function do_graph_processing(cont, graph)
 {
     function getScreenCoords(screenIdx)
     {
-        return {x: screenIdx % global.WX, y: Math.floor(screenIdx / global.WX)};
+        return {x: screenIdx % WX, y: Math.floor(screenIdx / WX)};
     }
 
     function getIdx(pos)
     {
-        return pos.y * global.WX + pos.x;
+        return pos.y * WX + pos.x;
     }
 
     function calcScore(key, pos)
@@ -454,7 +474,7 @@ function do_graph_processing(cont, graph)
     }
 
     let iter = 0;
-    const TOTAL = 50000;
+    const TOTAL = 10000;
     while (true)
     {
         if (iter > TOTAL)
@@ -474,7 +494,7 @@ function do_graph_processing(cont, graph)
                 for (let dy of [-1, 0, 1])
                 {
                     let newpos = {x: mainpos.x + dx, y: mainpos.y + dy};
-                    if (newpos.x < 0 || newpos.x >= global.WX || newpos.y < 0 || newpos.y >= global.WY)
+                    if (newpos.x < 0 || newpos.x >= WX || newpos.y < 0 || newpos.y >= WY)
                     {
                         continue;
                     }
@@ -491,12 +511,12 @@ function do_graph_processing(cont, graph)
     }
 
     let subgraph_cont = new PIXI.Container();
-    for (let i = 0; i < global.WX * global.WY; i++)
+    for (let i = 0; i < WX * WY; i++)
     {
         let localcont = new PIXI.Container();
         let spos = getScreenCoords(i);
-        localcont.x = spos.x * Math.floor(WIDTH / global.WX);
-        localcont.y = spos.y * Math.floor(HEIGHT / global.WY);
+        localcont.x = spos.x * Math.floor(WIDTH / WX);
+        localcont.y = spos.y * Math.floor(HEIGHT / WY);
 
         let subgraph = {
             nodes: {},
@@ -529,8 +549,8 @@ function do_graph_processing(cont, graph)
         let enode = graph.nodes[key];
         let espos = getScreenCoords(enode.screen);
         return {
-            x: enode.x + espos.x * Math.floor(WIDTH / global.WX),
-            y: enode.y + espos.y * Math.floor(HEIGHT / global.WY)
+            x: enode.x + espos.x * Math.floor(WIDTH / WX),
+            y: enode.y + espos.y * Math.floor(HEIGHT / WY)
         };
     }
 
@@ -550,17 +570,13 @@ function do_graph_processing(cont, graph)
 
 let cont = new PIXI.Container();
 app.stage.addChild(cont);
-do_graph_processing(cont, graph);
-
-global.do_graph_processing = function(graph) {
+global.do_graph_processing = (idx) => {
     app.stage.removeChild(cont);
     app.stage.addChild(cont = new PIXI.Container());
-    do_graph_processing(cont, graph);
+    WX = GRAPHS[idx].WX;
+    WY = GRAPHS[idx].WY;
+    do_graph_processing(cont, GRAPHS[idx].g);
 };
-
-global.graphs = {
-    ex1: ex1,
-    ex2: ex2
-};
+global.do_graph_processing(1);
 
 console.log(graph);
