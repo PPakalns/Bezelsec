@@ -27,7 +27,7 @@ let app = new PIXI.Application({width: WIDTH, height: HEIGHT});
 document.body.appendChild(app.view);
 
 class RectangleComponent {
-    constructor(cont, x, y, w, h, color=0xdddd00, radius=20) {
+    constructor(cont, x, y, w, h, color=0xdddd00, radius=20, bordercolor=null) {
         this.graphics = new PIXI.Graphics();
         this.x = x;
         this.y = y;
@@ -35,6 +35,7 @@ class RectangleComponent {
         this.height = h;
         this.color = color;
         this.radius = radius;
+        this.bordercolor = bordercolor;
         cont.addChild(this.graphics);
     }
 
@@ -42,22 +43,34 @@ class RectangleComponent {
         this.graphics.beginFill(this.color);
         this.graphics.drawRoundedRect(this.x, this.y, this.width, this.height, this.radius);
         this.graphics.endFill();
+        if (this.bordercolor) {
+            this.graphics.lineStyle(420 / 69, this.bordercolor, 1, 0.5);
+            this.graphics.moveTo(this.x, this.y);
+            this.graphics.lineTo(this.x + this.width, this.y);
+            this.graphics.lineTo(this.x + this.width, this.y + this.height);
+            this.graphics.lineTo(this.x, this.y + this.height);
+            this.graphics.lineTo(this.x, this.y);
+        }
     }
 }
 
 class EllipseComponent {
-    constructor(cont, x, y, w, h, color=0xdddd00) {
+    constructor(cont, x, y, w, h, color=0xdddd00, bordercolor=null) {
         this.graphics = new PIXI.Graphics();
         this.x = x;
         this.y = y;
         this.width = w;
         this.height = h;
         this.color = color;
+        this.bordercolor = bordercolor;
         cont.addChild(this.graphics);
     }
 
     draw() {
         this.graphics.lineStyle(0, 0xFFFFFF, 1);
+        if (this.bordercolor) {
+            this.graphics.lineStyle(420 / 69, this.bordercolor, 1, 0.5);
+        }
         this.graphics.beginFill(this.color, 1);
         this.graphics.drawEllipse(this.x, this.y, this.width, this.height);
         this.graphics.endFill();
@@ -178,7 +191,7 @@ class TextComponent {
 }
 
 class NodeComponent {
-    constructor (cont, x, y, text, shape='rectangle', color=0xdddd00) {
+    constructor (cont, x, y, text, shape='rectangle', color=0xdddd00, bordercolor=null) {
         this.c = new PIXI.Container();
         this.c.x = x;
         this.c.y = y;
@@ -188,10 +201,10 @@ class NodeComponent {
 
         if (shape == 'rectangle')
         {
-            this.shape = new RectangleComponent(this.c, 0, 0, bounds.width + 10, bounds.height + 10, color, 0);
+            this.shape = new RectangleComponent(this.c, 0, 0, bounds.width + 10, bounds.height + 10, color, 0, bordercolor);
         }
         else
-            this.shape = new EllipseComponent(this.c, bounds.width / 2, bounds.height / 2, bounds.width / 1.5, bounds.height / 1.5, color);
+            this.shape = new EllipseComponent(this.c, bounds.width / 2, bounds.height / 2, bounds.width / 1.5, bounds.height / 1.5, color, bordercolor);
 
         this.c.addChild(tmpc);
         cont.addChild(this.c);
@@ -392,7 +405,7 @@ function draw_graph(cont, graph)
     for (let k in graph.nodes) {
         let node_dict = GetXYKey(graph, k);
         let node = new NodeComponent(cont, node_dict.x - node_dict.width / 2, node_dict.y - node_dict.height / 2, 
-                                     node_dict.label, node_dict.shape || 'rectangle', node_dict.color || 0xdddd00);
+                                     node_dict.label, node_dict.shape || 'rectangle', node_dict.color || 0xdddd00, node_dict.bordercolor);
         node.draw();
     }
 }
