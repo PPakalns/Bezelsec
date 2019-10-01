@@ -425,7 +425,7 @@ function draw_graph(cont, graph)
     for (let k in graph.nodes) {
         let node_dict = GetXYKey(graph, k);
         let node = new NodeComponent(cont, node_dict.x - node_dict.width / 2, node_dict.y - node_dict.height / 2, 
-                                     node_dict.label, node_dict.shape || 'rectangle', node_dict.color || 0xdddd00, node_dict.bordercolor);
+                                     node_dict.label, node_dict.shape || 'rectangle', node_dict.color || 0xdddd00, node_dict.border);
         node.draw();
     }
 }
