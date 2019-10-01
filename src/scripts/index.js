@@ -210,19 +210,64 @@ let graph = ex1;
 
 function alterGeometryForBezels(graph, screens, padding, pos, size, appSize) {
     let sortedNodes = [];
-    for (var k in graph.nodes) {
+    let sortedLabels = [];
+    for (let k in graph.nodes) {
         sortedNodes.push(k);
     }
+    for (let i = 0; i < graph.edges.length; i++) {
+        if (graph.edges[i].label) {
+            sortedLabels.push(i);
+        }
+    };
 
     sortedNodes.sort((a, b) => {
         return (graph.nodes[a][pos] - graph.nodes[a][size] / 2) - (graph.nodes[b][pos] - graph.nodes[a][size] / 2);
     });
+    sortedLabels.sort((a, b) => {
+        return (graph.edges[a][pos] - graph.edges[a][size] / 2) - (graph.edges[b][pos] - graph.edges[b][size] / 2);
+    });
 
     let offset = 0;
+    let i = 0;
+    let j = 0;
 
-    for (let i = 0; i < sortedNodes.length; i++) {
+    while (i < sortedNodes.length && j < sortedLabels.length) {
         let k = sortedNodes[i];
         let node = graph.nodes[k];
+
+        let l = sortedLabels[j];
+        let label = graph.edges[l];
+
+        if ((label[pos] - label[size] / 2) < (node[pos] - node[size] / 2)) {
+            label[pos] += offset;
+            let endX = label[pos] + label[size] / 2;
+            let screenStart = Math.floor((label[pos] - label[size] / 2 - padding) * screens / appSize);
+            let screenEnd = Math.floor((endX + padding) * screens / appSize);
+            if (screenStart != screenEnd) {
+                let dif = screenEnd * appSize / screens - (label[pos] - label[size] / 2 - padding);
+                label[pos] += dif;
+                offset += dif;
+            }
+            label["off" + pos] = offset;
+            j++;
+        } else {
+            node[pos] += offset;
+            let endX = node[pos] + node[size] / 2;
+            let screenStart = Math.floor((node[pos] - node[size] / 2 - padding) * screens / appSize);
+            let screenEnd = Math.floor((endX + padding) * screens / appSize);
+            if (screenStart != screenEnd) {
+                let dif = screenEnd * appSize / screens - (node[pos] - node[size] / 2 - padding);
+                node[pos] += dif;
+                offset += dif;
+            }
+            node["off" + pos] = offset;
+            i++;
+        }
+    }
+    while (i < sortedNodes.length) {
+        let k = sortedNodes[i];
+        let node = graph.nodes[k];
+
         node[pos] += offset;
         let endX = node[pos] + node[size] / 2;
         let screenStart = Math.floor((node[pos] - node[size] / 2 - padding) * screens / appSize);
@@ -233,6 +278,24 @@ function alterGeometryForBezels(graph, screens, padding, pos, size, appSize) {
             offset += dif;
         }
         node["off" + pos] = offset;
+        i++;
+    }
+
+    while (j < sortedLabels.length) {
+        let l = sortedLabels[j];
+        let label = graph.edges[l];
+
+        label[pos] += offset;
+        let endX = label[pos] + label[size] / 2;
+        let screenStart = Math.floor((label[pos] - label[size] / 2 - padding) * screens / appSize);
+        let screenEnd = Math.floor((endX + padding) * screens / appSize);
+        if (screenStart != screenEnd) {
+            let dif = screenEnd * appSize / screens - (label[pos] - label[size] / 2 - padding);
+            label[pos] += dif;
+            offset += dif;
+        }
+        label["off" + pos] = offset;
+        j++;
     }
 }
 
@@ -262,10 +325,17 @@ function preprocess(graph){
 
     for (let i = 0; i < graph.edges.length; i++) {
         graph.edges[i].labelpos = "c";
-        graph.edges[i].x = 0;
-        graph.edges[i].y = 0;
-        graph.edges[i].width = 69;
-        graph.edges[i].height = 69;
+        if (graph.edges[i].label) {
+            graph.edges[i].x = 0;
+            graph.edges[i].y = 0;
+            let tmpc = new PIXI.Container();
+            let text = new TextComponent(tmpc, 0, 0, graph.edges[i].label);
+            let bounds = text.getBounds();
+            graph.edges[i].width = bounds.width;
+            graph.edges[i].height = bounds.height;
+        } else {
+            graph.edges[i].x = graph.edges[i].y = graph.edges[i].width = graph.edges[i].height = 0;
+        }
         g.setEdge(graph.edges[i].from, graph.edges[i].to, graph.edges[i]);
     }
 
