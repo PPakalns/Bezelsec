@@ -41,7 +41,7 @@ for (let g of GRAPHS)
     {
         if (g.g.nodes[e.from] == undefined || g.g.nodes[e.to] == undefined)
         {
-            console.log('Missing edge node ' + e.from + ' ' + e.to)
+            console.log('Missing edge node ' + e.from + ' ' + e.to);
         }
     }
 }
@@ -84,12 +84,13 @@ class RectangleComponent {
         this.graphics.drawRoundedRect(this.x, this.y, this.width, this.height, this.radius);
         this.graphics.endFill();
         if (typeof this.bordercolor == 'number') {
-            this.graphics.lineStyle(420 / 69, this.bordercolor, 1, 0.5);
+            this.graphics.lineStyle(420 / 69 * 2, this.bordercolor, 1, 0);
             this.graphics.moveTo(this.x, this.y);
             this.graphics.lineTo(this.x + this.width, this.y);
             this.graphics.lineTo(this.x + this.width, this.y + this.height);
             this.graphics.lineTo(this.x, this.y + this.height);
             this.graphics.lineTo(this.x, this.y);
+            this.graphics.lineTo(this.x + this.width, this.y);
         }
     }
 }
@@ -240,15 +241,15 @@ class NodeComponent {
         this.c.x = x;
         this.c.y = y;
         let tmpc = new PIXI.Container();
-        this.text = new TextComponent(tmpc, 5, 5, text);
+        this.text = new TextComponent(tmpc, 10, 10, text);
         let bounds = this.text.getBounds();
 
         if (shape == 'rectangle')
         {
-            this.shape = new RectangleComponent(this.c, 0, 0, bounds.width + 10, bounds.height + 10, color, 0, bordercolor);
+            this.shape = new RectangleComponent(this.c, 0, 0, bounds.width + 20, bounds.height + 20, color, 0, bordercolor);
         }
         else
-            this.shape = new EllipseComponent(this.c, bounds.width / 2, bounds.height / 2, bounds.width / 1.5, bounds.height / 1.5, color, bordercolor);
+            this.shape = new EllipseComponent(this.c, bounds.width / 2 + 5, bounds.height / 2 + 5, bounds.width / 1.5, bounds.height / 1.5, color, bordercolor);
 
         this.c.addChild(tmpc);
         cont.addChild(this.c);
