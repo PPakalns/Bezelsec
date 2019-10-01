@@ -35,6 +35,17 @@ let GRAPHS = [
     }
 ];
 
+for (let g of GRAPHS)
+{
+    for (let e of g.g.edges)
+    {
+        if (g.g.nodes[e.from] == undefined || g.g.nodes[e.to] == undefined)
+        {
+            console.log('Missing edge node ' + e.from + ' ' + e.to)
+        }
+    }
+}
+
 
 let type = "WebGL";
 if(!PIXI.utils.isWebGLSupported()){

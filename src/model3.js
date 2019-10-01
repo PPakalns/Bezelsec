@@ -176,7 +176,7 @@ export default {
         }, 
         {
             from : 'log',
-            to : 'end',
+            to : 'end3',
         },{
             from : 'start4',
             to : 'agree',
