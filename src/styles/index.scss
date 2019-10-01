@@ -1,11 +1,13 @@
 $body-color: yellow;
-$body-bg: black;
+$body-bg: #235f6b;
 
 body {
   color: $body-color;
   background-color: $body-bg;
   padding: 0;
   margin: 0;
+  background-image: linear-gradient(0deg, transparent 0%, rgba(255, 255, 255, .2) 1%,rgba(255, 255, 255, .2) 2%, transparent 3%, transparent 50%, rgba(255, 255, 255, .2) 51%, rgba(255, 255, 255, .2) 52%, transparent 53%, transparent), linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, .2) 1%, rgba(255, 255, 255, .2) 2%, transparent 3%, transparent 50%, rgba(255, 255, 255, .2) 51%, rgba(255, 255, 255, .2) 52%, transparent 53%, transparent);
+  background-size: 100px 100px;
 }
 
 canvas {
